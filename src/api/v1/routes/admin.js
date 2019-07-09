@@ -1,9 +1,21 @@
 import { Router } from 'express';
-import AdminController from '../controllers/adminController';
-import adminValidator from '../../../validators/validateAdmin';
+import passport from 'passport';
+import AdminController from '../controllers/adminControllers';
+import adminValidator from '../controllers/adminControllers/validateAdmin';
 
-const AdminRouters = Router();
+const adminRouters = Router();
 
-AdminRouters.post('/admins', adminValidator, AdminController.create);
+adminRouters
+  .post('/admins', adminValidator, AdminController.create)
+  .get(
+    '/admins',
+    passport.authenticate('jwt', { session: false }),
+    AdminController.findAll
+  )
+  .get(
+    '/admins/:id',
+    passport.authenticate('jwt', { session: false }),
+    AdminController.findOne
+  );
 
-export default AdminRouters;
+export default adminRouters;

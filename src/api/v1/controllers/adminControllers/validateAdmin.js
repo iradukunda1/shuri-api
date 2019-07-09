@@ -1,4 +1,5 @@
 import Joi from '@hapi/joi';
+import joiError from '../../../../utils/joiError';
 
 export default (req, res, next) => {
   const { username, password } = req.body;
@@ -15,14 +16,7 @@ export default (req, res, next) => {
   });
   Joi.validate({ username, password }, schema, (err, _value) => {
     if (err) {
-      const error = {};
-      const { details } = err;
-      details.forEach(element => {
-        const {
-          context: { key, label }
-        } = element;
-        error[key] = label;
-      });
+      const error = joiError(err);
       return res.status(400).json({ message: 'Validation error', error });
     }
     return next();
