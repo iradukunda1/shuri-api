@@ -4,7 +4,11 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "dev": "NODE_ENV=development nodemon --exec babel-node src/server.js",
+    "clean": "rm -rf dist && mkdir dist",
+    "build-server": "babel -d ./dist ./src/server.js",
+    "build": "npm run clean && npm run build-server"
   },
   "repository": {
     "type": "git",
@@ -26,5 +30,17 @@
     "express": "^4.17.1",
     "pg": "^7.11.0",
     "sequelize-cli": "^5.5.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.5.0",
+    "@babel/core": "^7.5.0",
+    "@babel/node": "^7.5.0",
+    "@babel/preset-env": "^7.5.2",
+    "eslint": "^6.0.1",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-import": "^2.18.0",
+    "jest": "^24.8.0",
+    "nodemon": "^1.19.1"
   }
 }
