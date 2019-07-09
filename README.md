@@ -1,16 +1,10 @@
 # Shuri-API
 
-## Vision
-
-N/A
-
----
-
 ## Code style
 
 The style-guide is ESlint-airbnb, and it uses prettier for frommating code. To enable `VS Code + ESLint + prettier` follow the steps below:
 
-- Text editor (VSCode)[https://code.visualstudio.com/]
+- Text editor [VSCode](https://code.visualstudio.com)
 - In VS Code, `Ctrl + Shift + X`
 - Search and install _ESLint_
 - Search and install _Prettier Code Formatter_
