@@ -1,0 +1,30 @@
+{
+  "name": "shuri-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/shuri-dev/shuri-api.git"
+  },
+  "keywords": [
+    "shuri",
+    "api",
+    "sequelize",
+    "postgresQL"
+  ],
+  "author": "Luc.A",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://gitlab.com/shuri-dev/shuri-api/issues"
+  },
+  "homepage": "https://gitlab.com/shuri-dev/shuri-api#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "pg": "^7.11.0",
+    "sequelize-cli": "^5.5.0"
+  }
+}
