@@ -7,7 +7,7 @@ export default class AuthController {
     try {
       const { username, password } = req.body;
       const errMsg = 'Invalid username/password';
-      const admin = await Admin.findOne({ username });
+      const admin = await Admin.findOne({ where: { username } });
       if (!admin) {
         return res.status(401).json({ message: errMsg });
       }

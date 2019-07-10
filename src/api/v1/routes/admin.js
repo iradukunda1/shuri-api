@@ -1,21 +1,13 @@
 import { Router } from 'express';
-import passport from 'passport';
 import AdminController from '../controllers/adminControllers';
 import adminValidator from '../controllers/adminControllers/validateAdmin';
+import authenticate from '../../../middleware/authenticate';
 
 const adminRouters = Router();
 
 adminRouters
   .post('/admins', adminValidator, AdminController.create)
-  .get(
-    '/admins',
-    passport.authenticate('jwt', { session: false }),
-    AdminController.findAll
-  )
-  .get(
-    '/admins/:id',
-    passport.authenticate('jwt', { session: false }),
-    AdminController.findOne
-  );
+  .get('/admins', authenticate, AdminController.findAll)
+  .get('/admins/:id', authenticate, AdminController.findOne);
 
 export default adminRouters;
