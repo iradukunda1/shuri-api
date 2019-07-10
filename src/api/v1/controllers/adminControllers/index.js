@@ -1,4 +1,3 @@
-import { isEmpty } from 'lodash';
 import db from '../../../../models';
 import { ADMIN_TYPES } from '../../../../constants';
 import dbErrors from '../../../../utils/dbErrors';
