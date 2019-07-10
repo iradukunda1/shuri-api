@@ -1,5 +1,6 @@
 module.exports = {
   displayName: 'Shuri',
+  testEnvironment: 'node',
   testMatch: ['**/?(*.)+(spec|test).js'],
   verbose: true,
   collectCoverage: true,

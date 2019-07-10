@@ -4,10 +4,10 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "jest",
-    "dev": "NODE_ENV=development nodemon --exec babel-node src/server.js",
+    "test": "jest ",
+    "dev": "NODE_ENV=development nodemon --exec babel-node src",
     "clean": "rm -rf dist && mkdir dist",
-    "build-server": "babel -d ./dist ./src/server.js",
+    "build-server": "babel -d ./dist ./src",
     "build": "npm run clean && npm run build-server"
   },
   "repository": {
@@ -27,11 +27,18 @@
   },
   "homepage": "https://gitlab.com/shuri-dev/shuri-api#readme",
   "dependencies": {
+    "@hapi/joi": "^15.1.0",
+    "bcrypt": "^3.0.6",
     "dotenv": "^8.0.0",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
     "pg": "^7.11.0",
+    "pg-hstore": "^2.3.3",
     "sequelize": "^5.9.4",
-    "sequelize-cli": "^5.5.0"
+    "sequelize-cli": "^5.5.0",
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.0",
@@ -43,6 +50,8 @@
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-import": "^2.18.0",
     "jest": "^24.8.0",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "superagent": "^5.1.0",
+    "supertest": "^4.0.2"
   }
 }

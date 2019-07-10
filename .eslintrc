@@ -5,5 +5,13 @@
     "node": true,
     "es6": true,
     "jest": true
+  },
+  "rules": {
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_"
+      }
+    ]
   }
 }
