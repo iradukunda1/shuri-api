@@ -24,23 +24,18 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM(['accountant', 'general'])
     },
     {
-      tableName: 'Admins',
-      hooks: {
-        beforeCreate(admin, _options) {
-          if (!admin.changed('password')) {
-            return sequelize.Promise.reject('not modified');
-          }
-          return bcrypt
-            .hash(admin.password, BCRYPT_SALT_FACTOR)
-            .then(hash => {
-              admin.setDataValue('password', hash);
-            })
-            .catch(err => {
-              return sequelize.Promise.reject(err);
-            });
-        }
-      }
+      tableName: 'Admins'
     }
   );
+  Admin.beforeCreate((admin, _options) => {
+    return bcrypt
+      .hash(admin.password, parseInt(BCRYPT_SALT_FACTOR, 10))
+      .then(hash => {
+        admin.setDataValue('password', hash);
+      })
+      .catch(err => {
+        throw new Error(err);
+      });
+  });
   return Admin;
 };

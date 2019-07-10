@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Companies', {
+    return queryInterface.createTable('Schools', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -11,11 +11,16 @@ module.exports = {
         type: Sequelize.STRING,
         unique: true
       },
-      email: {
-        type: Sequelize.STRING,
-        unique: true
+      province: {
+        type: Sequelize.STRING
       },
-      password: {
+      district: {
+        type: Sequelize.STRING
+      },
+      sector: {
+        type: Sequelize.STRING
+      },
+      cell: {
         type: Sequelize.STRING
       },
       createdAt: {
@@ -29,6 +34,6 @@ module.exports = {
     });
   },
   down: (queryInterface, _Sequelize) => {
-    return queryInterface.dropTable('Companies');
+    return queryInterface.dropTable('Schools');
   }
 };

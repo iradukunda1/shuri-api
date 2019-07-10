@@ -1,12 +1,16 @@
+import { isEmpty } from 'lodash';
 import { UNIQUE_VIOLATION } from '../constants';
 
-export default (errors = []) => {
+export default err => {
   const error = {};
-  errors.forEach(element => {
+  if (isEmpty(err.errors)) {
+    return err.message || 'Bad request';
+  }
+  err.errors.forEach(element => {
     const { path, message, type } = element;
     switch (type) {
       case UNIQUE_VIOLATION:
-        error[path] = `${path} already taken`;
+        error[path] = `${path} is already taken`;
         break;
       default:
         error[path] = message;

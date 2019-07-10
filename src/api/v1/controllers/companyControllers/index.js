@@ -13,18 +13,35 @@ export default class CompanyController {
         password: newUser.password
       } = req.body);
       const company = await Company.create(newUser);
-      res.json({ message: 'Success', company });
+      company.password = undefined;
+      res.status(201).json({ message: 'Success', company });
     } catch (err) {
-      console.log(err.message);
-      let error = dbErrors(err.errors);
-      if (isEmpty(error)) {
-        error = error.message || 'Bad request';
-      }
+      const error = dbErrors(err);
       res.status(400).json({ message: 'Company registration failed', error });
     }
   }
 
-  static async findAll(req, res) {
+  static async update(req, res) {
+    try {
+      const { id } = req.params;
+      const { name, email, password } = req.body;
+      const company = await Company.findOne({ where: { id } });
+      if (isEmpty(company)) {
+        return res.status(404).json({ error: 'Record not found' });
+      }
+      const updatedCompany = await company.update({ name, email, password });
+      updatedCompany.password = undefined;
+      return res.status(201).json({
+        message: 'Company update successfully',
+        company: updatedCompany
+      });
+    } catch (err) {
+      const error = dbErrors(err);
+      return res.status(400).json({ message: 'Update failed', error });
+    }
+  }
+
+  static async findAll(_req, res) {
     try {
       const companies = await Company.findAll({
         attributes: {
@@ -34,6 +51,24 @@ export default class CompanyController {
       res.json({ message: 'Success', companies });
     } catch (error) {
       res.status(400).json({ error: error.message || 'Bad request' });
+    }
+  }
+
+  static async find(req, res) {
+    try {
+      const { id } = req.params;
+      const company = await Company.findOne({
+        where: { id },
+        attributes: {
+          exclude: ['password']
+        }
+      });
+      if (isEmpty(company)) {
+        return res.status(404).json({ error: 'Record not found' });
+      }
+      return res.json({ message: 'Success', company });
+    } catch (error) {
+      return res.status(400).json({ error: error.message || 'Bad request' });
     }
   }
 }

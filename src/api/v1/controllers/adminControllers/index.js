@@ -1,4 +1,3 @@
-import { isEmpty } from 'lodash';
 import db from '../../../../models';
 import { ADMIN_TYPES } from '../../../../constants';
 import dbErrors from '../../../../utils/dbErrors';
@@ -14,10 +13,7 @@ export default class AdminController {
       user.password = undefined;
       return res.json({ message: 'Success', user });
     } catch (err) {
-      let error = dbErrors(err.errors);
-      if (isEmpty(error)) {
-        error = err.message || 'Bad request';
-      }
+      const error = dbErrors(err);
       return res
         .status(400)
         .json({ message: 'Admin registration failed', error });
