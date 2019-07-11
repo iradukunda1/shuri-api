@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import db from '../../../../models';
 import getToken from './getToken';
 
-const { Admin, Company } = db;
+const { Admin, BusCompany } = db;
 export default class AuthController {
   static async admin(req, res) {
     try {
@@ -25,11 +25,11 @@ export default class AuthController {
     try {
       const { email, password } = req.body;
       const message = 'Invalid email/password';
-      const company = await Company.findOne({ where: { email } });
+      const company = await BusCompany.findOne({ where: { email } });
       if (isEmpty(company)) {
         return res.status(401).json({ message });
       }
-      const payload = { id: company.id, resource: 'Company' };
+      const payload = { id: company.id, resource: 'BusCompany' };
       const token = await getToken(password, company.password, payload, true);
       return res.json({ message: 'Login success', token });
     } catch (error) {

@@ -1,18 +1,26 @@
 import { Router } from 'express';
-import CompanyController from '../controllers/companyControllers';
-import validateCompany from '../controllers/companyControllers/validateCompany';
+import CompanyController from '../controllers/busCompanyControllers';
+import validateCompany from '../controllers/busCompanyControllers/validateCompany';
 import authenticate from '../../../middleware/authenticate';
+import authorize from '../../../middleware/authorize';
 
 const companyRouters = Router();
+companyRouters.all('*', authenticate);
 companyRouters
-  .get('/companies', authenticate, CompanyController.findAll)
-  .post('/companies', authenticate, validateCompany, CompanyController.create)
+  .get('/companies', CompanyController.findAll)
+  .post(
+    '/companies',
+    authorize('admin'),
+    validateCompany,
+    CompanyController.create
+  )
   .put(
     '/companies/:id',
-    authenticate,
+    authorize('admin'),
     validateCompany,
     CompanyController.update
   )
-  .get('/companies/:id', authenticate, CompanyController.find);
+  .get('/companies/:id', CompanyController.find)
+  .delete('/companies/:id', authorize('admin'), CompanyController.destroy);
 
 export default companyRouters;

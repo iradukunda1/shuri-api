@@ -4,8 +4,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 const { BCRYPT_SALT_FACTOR } = process.env;
 module.exports = (sequelize, DataTypes) => {
-  const Company = sequelize.define(
-    'Company',
+  const BusCompany = sequelize.define(
+    'BusCompany',
     {
       id: {
         allowNull: false,
@@ -29,10 +29,10 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     {
-      tableName: 'Companies'
+      tableName: 'BusCompanies'
     }
   );
-  Company.beforeSave((company, _options) => {
+  BusCompany.beforeSave((company, _options) => {
     return bcrypt
       .hash(company.password, parseInt(BCRYPT_SALT_FACTOR, 10))
       .then(hash => {
@@ -42,6 +42,5 @@ module.exports = (sequelize, DataTypes) => {
         throw new Error(err);
       });
   });
-  Company.associate = _models => {};
-  return Company;
+  return BusCompany;
 };

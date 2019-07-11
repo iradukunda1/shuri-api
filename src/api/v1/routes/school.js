@@ -1,17 +1,16 @@
 import { Router } from 'express';
 import SchoolController from '../controllers/schoolControllers';
 import authenticate from '../../../middleware/authenticate';
+import validateSchool from '../controllers/schoolControllers/schoolValidator';
+import authorize from '../../../middleware/authorize';
 
 const schoolRouters = Router();
-/**
- * please handle validation and authorization
- * (for authorization look for a page)
- */
+schoolRouters.all('*', authenticate);
 schoolRouters
-  .post('/schools', authenticate, SchoolController.create)
-  .get('/schools', authenticate, SchoolController.findAll)
-  .get('/schools/:id', authenticate, SchoolController.find)
-  .put('/schools/:id', authenticate, SchoolController.update)
-  .delete('/schools/:id', authenticate, SchoolController.destroy);
+  .post('/schools', authorize('admin'), validateSchool, SchoolController.create)
+  .get('/schools', SchoolController.findAll)
+  .get('/schools/:id', SchoolController.find)
+  .put('/schools/:id', authorize('admin'), SchoolController.update)
+  .delete('/schools/:id', authorize('admin'), SchoolController.destroy);
 
 export default schoolRouters;
