@@ -27,11 +27,14 @@ module.exports = (sequelize, DataTypes) => {
     }
     return data;
   };
+<<<<<<< HEAD
   Bus.associate = models => {
     Bus.belongsTo(models.BusCompany, {
       foreignKey: 'busCompanyId',
       hooks: true
     });
   };
+=======
+>>>>>>> [#167202226] buses and drivers:
   return Bus;
 };
