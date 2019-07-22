@@ -1,24 +1,32 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Admins', {
+    return queryInterface.createTable('Schools', {
       id: {
         allowNull: false,
         primaryKey: true,
         type: Sequelize.UUID,
         defaultValue: Sequelize.UUIDV4
       },
-      username: {
+      name: {
         type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+        unique: true,
+        allowNull: false
       },
-      password: {
+      province: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      type: {
-        type: Sequelize.ENUM('accountant', 'general'),
-        defaultValue: 'accountant'
+      district: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      sector: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      cell: {
+        type: Sequelize.STRING,
+        allowNull: false
       },
       createdAt: {
         allowNull: false,
@@ -31,6 +39,6 @@ module.exports = {
     });
   },
   down: (queryInterface, _Sequelize) => {
-    return queryInterface.dropTable('Admins');
+    return queryInterface.dropTable('Schools');
   }
 };

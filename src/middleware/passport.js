@@ -17,7 +17,8 @@ passport.use(
     try {
       const user = await database[resource].findOne({ id });
       if (user) {
-        return done(null, { id: user.id, resource });
+        const role = user.role || resource.toLowerCase();
+        return done(null, { id: user.id, resource, role });
       }
       return done(null, false);
     } catch (error) {

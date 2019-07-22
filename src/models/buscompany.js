@@ -4,8 +4,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 const { BCRYPT_SALT_FACTOR } = process.env;
 module.exports = (sequelize, DataTypes) => {
-  const Admin = sequelize.define(
-    'Admin',
+  const BusCompany = sequelize.define(
+    'BusCompany',
     {
       id: {
         allowNull: false,
@@ -13,29 +13,34 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4
       },
-      username: {
+      name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
+      },
+      email: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
       },
       password: {
         type: DataTypes.STRING,
         allowNull: false
-      },
-      type: DataTypes.ENUM(['accountant', 'general'])
+      }
     },
     {
-      tableName: 'Admins'
+      tableName: 'BusCompanies'
     }
   );
-  Admin.beforeCreate((admin, _options) => {
+  BusCompany.beforeSave((company, _options) => {
     return bcrypt
-      .hash(admin.password, parseInt(BCRYPT_SALT_FACTOR, 10))
+      .hash(company.password, parseInt(BCRYPT_SALT_FACTOR, 10))
       .then(hash => {
-        admin.setDataValue('password', hash);
+        company.setDataValue('password', hash);
       })
       .catch(err => {
         throw new Error(err);
       });
   });
-  return Admin;
+  return BusCompany;
 };
