@@ -57,7 +57,6 @@ module.exports = (sequelize, DataTypes) => {
     }
     return data;
   };
-<<<<<<< HEAD
 
   Driver.associate = models => {
     Driver.belongsTo(models.BusCompany, {
@@ -65,7 +64,6 @@ module.exports = (sequelize, DataTypes) => {
       hooks: true
     });
   };
-=======
->>>>>>> [#167202226] buses and drivers:
+
   return Driver;
 };
