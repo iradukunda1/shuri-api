@@ -1,13 +1,18 @@
 import db from '../../../../models';
 import dbErrors from '../../../../utils/dbErrors';
 
-const { Bus } = db;
+const { Bus, BusCompany } = db;
 
 export default class BusController {
   static async create(req, res) {
     try {
       const { model, plateNumber } = req.body;
-      const bus = await Bus.create({ model, plateNumber });
+      const { companyId } = req.params;
+      const bus = await Bus.create({
+        model,
+        plateNumber,
+        busCompanyId: companyId
+      });
       return res
         .status(201)
         .json({ message: 'Bus registered successfully', bus });
@@ -19,10 +24,24 @@ export default class BusController {
     }
   }
 
-  static async findAll(_req, res) {
+  static async findAll(req, res) {
     try {
-      const buses = await Bus.findAll();
-      return res.status(200).json({ message: 'success', buses });
+      const { companyId } = req.params;
+      const data = await BusCompany.findOne({
+        where: {
+          id: companyId
+        },
+        attributes: {
+          exclude: ['password']
+        },
+        include: [
+          {
+            model: Bus,
+            as: 'buses'
+          }
+        ]
+      });
+      return res.status(200).json({ message: 'success', data });
     } catch (err) {
       const error = err.message || 'Bad request';
       return res.status(400).json({ error });
@@ -31,8 +50,13 @@ export default class BusController {
 
   static async find(req, res) {
     try {
-      const { id } = req.params;
-      const bus = await Bus.findById(id);
+      const { id, companyId } = req.params;
+      const bus = await Bus.findOne({
+        where: {
+          id,
+          busCompanyId: companyId
+        }
+      });
       return res.status(200).json({ message: 'success', bus });
     } catch (err) {
       const error = err.message || 'Bad request';
@@ -43,8 +67,14 @@ export default class BusController {
   static async update(req, res) {
     try {
       const { id } = req.params;
+      const { id: busCompanyId } = req.user;
       const { plateNumber, model } = req.body;
-      const bus = await Bus.findById(id);
+      const bus = await Bus.Bus.findOne({
+        where: {
+          id,
+          busCompanyId
+        }
+      });
       const data = await bus.update({ plateNumber, model });
       return res
         .status(201)
@@ -58,7 +88,13 @@ export default class BusController {
   static async destroy(req, res) {
     try {
       const { id } = req.params;
-      const bus = await Bus.findById(id);
+      const { id: busCompanyId } = req.user;
+      const bus = await Bus.findOne({
+        where: {
+          id,
+          busCompanyId
+        }
+      });
       await bus.destroy();
       return res.status(200).json({ message: 'Bus deleted successfully' });
     } catch (err) {

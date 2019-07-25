@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import db from '../../../../models';
 import dbErrors from '../../../../utils/dbErrors';
 
-const { BusCompany } = db;
+const { BusCompany, Driver } = db;
 export default class CompanyController {
   static async create(req, res) {
     try {
@@ -46,7 +46,12 @@ export default class CompanyController {
       const companies = await BusCompany.findAll({
         attributes: {
           exclude: ['password']
-        }
+        },
+        include: [
+          {
+            model: Driver
+          }
+        ]
       });
       res.json({ message: 'Success', companies });
     } catch (error) {

@@ -42,5 +42,19 @@ module.exports = (sequelize, DataTypes) => {
         throw new Error(err);
       });
   });
+  BusCompany.associate = models => {
+    BusCompany.hasMany(models.Driver, {
+      as: 'drivers',
+      onDelete: 'CASCADE',
+      foreignKey: 'busCompanyId'
+    });
+
+    BusCompany.hasMany(models.Bus, {
+      as: 'buses',
+      onDelete: 'CASCADE',
+      foreignKey: 'busCompanyId'
+    });
+  };
+
   return BusCompany;
 };
