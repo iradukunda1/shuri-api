@@ -14,15 +14,11 @@ export default class SchoolUserController {
         password: newUser.password,
         phoneNumber: newUser.phoneNumber
       } = req.body);
-      const school = await School.findByPk(schoolId);
-      if (!school) {
-        throw new Error('Invalid school id');
-      }
-      const response = await User.create({ ...newUser, schoolId: school.id });
+      const response = await User.create({ ...newUser, schoolId });
       response.password = undefined;
       return res
         .status(201)
-        .json({ message: 'User registered successfully', user: response });
+        .json({ message: 'User registered successfully', data: response });
     } catch (err) {
       return badRequest(res, err);
     }
@@ -38,6 +34,7 @@ export default class SchoolUserController {
         include: [
           {
             model: User,
+            as: 'users',
             attributes: {
               exclude: ['password']
             }
@@ -46,7 +43,7 @@ export default class SchoolUserController {
       });
       return res.json({ message: 'Success', data });
     } catch (err) {
-      return badRequest(req, err);
+      return badRequest(res, err);
     }
   }
 
@@ -65,7 +62,7 @@ export default class SchoolUserController {
       if (!user) {
         return notFound(res);
       }
-      return res.json({ message: 'success', user });
+      return res.json({ message: 'Success', data: user });
     } catch (err) {
       return badRequest(res, err);
     }
@@ -92,7 +89,9 @@ export default class SchoolUserController {
       }
       const response = await user.update(newUser);
       response.password = undefined;
-      return res.status(202).json({ message: 'Success', user: response });
+      return res
+        .status(200)
+        .json({ message: 'User update successfully', data: response });
     } catch (err) {
       return badRequest(res, err);
     }
@@ -106,7 +105,7 @@ export default class SchoolUserController {
         return notFound(res);
       }
       await user.destroy();
-      return res.status(200).json({ message: 'Record deleted successfully' });
+      return res.status(200).json({ message: 'User removed successfully' });
     } catch (err) {
       return badRequest(res, err);
     }

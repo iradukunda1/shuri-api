@@ -4,7 +4,8 @@ import { UNIQUE_VIOLATION } from '../constants';
 export default err => {
   const error = {};
   if (isEmpty(err.errors)) {
-    return err.message || 'Bad request';
+    error.message = err.message || 'Bad request';
+    return error;
   }
   err.errors.forEach(element => {
     const { path, message, type } = element;

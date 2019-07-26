@@ -1,5 +1,5 @@
 import db from '../../../../models';
-import dbErrors from '../../../../utils/dbErrors';
+import { badRequest, notFound } from '../../../../utils/response';
 
 const { Driver, BusCompany } = db;
 
@@ -17,12 +17,11 @@ export default class DriverController {
       } = req.body);
       const driver = await Driver.create(newDriver);
       driver.password = undefined;
-      res
+      return res
         .status(201)
-        .json({ message: ' Driver registered successfully', driver });
+        .json({ message: 'Driver registered successfully', data: driver });
     } catch (err) {
-      const error = dbErrors(err);
-      res.status(500).json({ message: 'Driver registration failed', error });
+      return badRequest(res, err);
     }
   }
 
@@ -46,25 +45,30 @@ export default class DriverController {
           }
         ]
       });
-      res.status(200).json({ message: 'success', data });
+      return res.status(200).json({ message: 'Success', data });
     } catch (err) {
-      const error = err.message || 'Bad request';
-      res.status(400).json({ error });
+      return badRequest(res, err);
     }
   }
 
   static async find(req, res) {
     try {
-      const { id } = req.params;
-      const driver = await Driver.findById(id, {
+      const { id, companyId: busCompanyId } = req.params;
+      const driver = await Driver.findOne({
+        where: {
+          id,
+          busCompanyId
+        },
         attributes: {
           exclude: ['password']
         }
       });
-      return res.status(200).json({ message: 'success', driver });
+      if (!driver) {
+        return notFound(res);
+      }
+      return res.status(200).json({ message: 'Success', data: driver });
     } catch (err) {
-      const error = err.message || 'Bad request';
-      return res.status(400).json({ error });
+      return badRequest(res, err);
     }
   }
 
@@ -79,12 +83,14 @@ export default class DriverController {
           busCompanyId
         }
       });
+      if (!driver) {
+        return notFound(res);
+      }
       const data = await driver.update({ firstName, lastName });
       data.password = undefined;
-      return res.status(201).json({ message: 'success', driver: data });
+      return res.status(200).json({ message: 'Success', data });
     } catch (err) {
-      const error = dbErrors(err);
-      return res.status(400).json({ error });
+      return badRequest(res, err);
     }
   }
 
@@ -98,11 +104,13 @@ export default class DriverController {
           busCompanyId
         }
       });
+      if (!driver) {
+        return notFound(res);
+      }
       await driver.destroy();
-      return res.status(201).json({ message: 'Driver removed successfully' });
+      return res.status(200).json({ message: 'Driver removed successfully' });
     } catch (err) {
-      const error = err.message || 'Bad request';
-      return res.status(400).json({ error });
+      return badRequest(res, err);
     }
   }
 }

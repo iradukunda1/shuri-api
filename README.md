@@ -1,5 +1,8 @@
 # Shuri-API
 
+[![pipeline status](https://gitlab.com/shuri-dev/shuri-api/badges/ch-sprint-1-test/pipeline.svg)](https://gitlab.com/shuri-dev/shuri-api/commits/ch-sprint-1-test)
+[![coverage report](https://gitlab.com/shuri-dev/shuri-api/badges/ch-sprint-1-test/coverage.svg)](https://gitlab.com/shuri-dev/shuri-api/commits/ch-sprint-1-test)
+
 ## Code style
 
 The style-guide is ESlint-airbnb, and it uses prettier for frommating code. To enable `VS Code + ESLint + prettier` follow the steps below:

@@ -33,12 +33,12 @@ export default class SchoolController {
         }
       });
       if (user) {
-        throw new Error('Email already taken');
+        throw new Error('Principal email already taken');
       }
       const school = await School.create(
         {
           ...newSchool,
-          Users: [
+          users: [
             {
               ...req.body.principal,
               type: 'PRINCIPAL'
@@ -46,13 +46,18 @@ export default class SchoolController {
           ]
         },
         {
-          include: [User]
+          include: [
+            {
+              model: User,
+              as: 'users'
+            }
+          ]
         }
       );
 
       return res
         .status(201)
-        .json({ message: 'School registered successfully', school });
+        .json({ message: 'School registered successfully', data: school });
     } catch (err) {
       return badRequest(res, err);
     }
@@ -64,13 +69,14 @@ export default class SchoolController {
         include: [
           {
             model: User,
+            as: 'users',
             attributes: {
               exclude: ['password']
             }
           }
         ]
       });
-      return res.json({ message: 'success', schools });
+      return res.json({ message: 'Success', data: schools });
     } catch (error) {
       return badRequest(res, error);
     }
@@ -89,12 +95,12 @@ export default class SchoolController {
       } = req.body);
       const school = await School.findOne({ where: { id } });
       if (isEmpty(school)) {
-        return res.status(404).json({ message: 'Record not found' });
+        return notFound(res);
       }
       const updateSchool = await school.update(attributes);
       return res
-        .status(201)
-        .json({ message: 'School update successfully', school: updateSchool });
+        .status(200)
+        .json({ message: 'School update successfully', data: updateSchool });
     } catch (err) {
       return badRequest(res, err);
     }
@@ -104,20 +110,12 @@ export default class SchoolController {
     try {
       const { id } = req.params;
       const school = await School.findOne({
-        where: { id },
-        include: [
-          {
-            model: User,
-            attributes: {
-              exclude: ['password']
-            }
-          }
-        ]
+        where: { id }
       });
       if (isEmpty(school)) {
         return notFound(res);
       }
-      return res.json({ message: 'success', school });
+      return res.json({ message: 'Success', data: school });
     } catch (err) {
       return badRequest(res, err);
     }
@@ -131,7 +129,7 @@ export default class SchoolController {
         return notFound(res);
       }
       await school.destroy();
-      return res.status(202).json({ message: 'Record deleted' });
+      return res.status(200).json({ message: 'School removed successfully' });
     } catch (err) {
       return badRequest(res, err);
     }
