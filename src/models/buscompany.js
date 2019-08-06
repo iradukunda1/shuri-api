@@ -54,6 +54,12 @@ module.exports = (sequelize, DataTypes) => {
       onDelete: 'CASCADE',
       foreignKey: 'busCompanyId'
     });
+
+    BusCompany.belongsToMany(models.School, {
+      foreignKey: 'companyId',
+      through: models.SchoolCompanyPartnership,
+      as: 'schools'
+    });
   };
 
   return BusCompany;
