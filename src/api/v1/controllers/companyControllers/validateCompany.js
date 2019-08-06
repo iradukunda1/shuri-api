@@ -2,19 +2,21 @@ import Joi from '@hapi/joi';
 import joiError from '../../../../utils/joiError';
 
 export default (req, res, next) => {
-  const { username, password } = req.body;
+  const { name, email, password } = req.body;
   const schema = Joi.object().keys({
-    username: Joi.string()
-      .min(4)
-      .max(12)
+    name: Joi.string()
       .required()
-      .label('Username should be between 4-12 characters'),
+      .label('Name is required'),
+    email: Joi.string()
+      .email()
+      .required()
+      .label('Invalid email'),
     password: Joi.string()
       .min(6)
       .required()
-      .label('Password should have minimum of 6 characters')
+      .label('Password should be more than 6 characters')
   });
-  Joi.validate({ username, password }, schema, (err, _value) => {
+  Joi.validate({ name, email, password }, schema, (err, _value) => {
     if (err) {
       const error = joiError(err);
       return res.status(400).json({ message: 'Validation error', error });

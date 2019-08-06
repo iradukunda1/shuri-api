@@ -1,5 +1,7 @@
+import { isEmpty } from 'lodash';
 import db from '../../../../models';
-import { ADMIN_TYPES, UNIQUE_VIOLATION } from '../../../../constants';
+import { ADMIN_TYPES } from '../../../../constants';
+import dbErrors from '../../../../utils/dbErrors';
 
 const { Admin } = db;
 
@@ -12,19 +14,7 @@ export default class AdminController {
       user.password = undefined;
       return res.json({ message: 'Success', user });
     } catch (err) {
-      const error = {};
-      const { errors } = err;
-      errors.forEach(element => {
-        const { path, message, type } = element;
-        switch (type) {
-          case UNIQUE_VIOLATION:
-            error[path] = `${path} already taken`;
-            break;
-          default:
-            error[path] = message;
-            break;
-        }
-      });
+      const error = dbErrors(err);
       return res
         .status(400)
         .json({ message: 'Admin registration failed', error });
