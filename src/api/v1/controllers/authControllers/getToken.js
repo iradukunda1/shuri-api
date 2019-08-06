@@ -1,3 +1,4 @@
+/* eslint-disable prefer-promise-reject-errors */
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
@@ -10,7 +11,7 @@ export default (password, hash, payload, isEmail = false) => {
   return new Promise((resolve, reject) => {
     bcrypt.compare(password, hash, (_err, match) => {
       if (!match) {
-        reject(new Error(`Invalid ${flied}/password`));
+        reject({ message: `Invalid ${flied}/password`, status: 401 });
       }
 
       jwt.sign(

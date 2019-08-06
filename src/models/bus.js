@@ -27,11 +27,13 @@ module.exports = (sequelize, DataTypes) => {
     }
     return data;
   };
+
   Bus.associate = models => {
     Bus.belongsTo(models.BusCompany, {
       foreignKey: 'busCompanyId',
       hooks: true
     });
   };
+
   return Bus;
 };

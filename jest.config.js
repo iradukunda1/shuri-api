@@ -8,9 +8,19 @@ module.exports = {
   collectCoverageFrom: [
     'src/**/*.{js,jsx}',
     '!**/coverage/**',
+    '!**/migrations/**',
+    '!**/seeders/**',
     '!**/node_modules/**',
     '!**/babel.config.js',
     '!**/jest.setup.js',
     '!**/dist/**'
-  ]
+  ],
+  coverageThreshold: {
+    global: {
+      branches: 80,
+      functions: 80,
+      lines: 80,
+      statements: 80
+    }
+  }
 };

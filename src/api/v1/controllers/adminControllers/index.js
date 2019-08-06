@@ -1,6 +1,6 @@
 import db from '../../../../models';
 import { ADMIN_TYPES } from '../../../../constants';
-import dbErrors from '../../../../utils/dbErrors';
+import { notFound, badRequest } from '../../../../utils/response';
 
 const { Admin } = db;
 
@@ -11,12 +11,9 @@ export default class AdminController {
       ({ username: newUser.username, password: newUser.password } = req.body);
       const user = await Admin.create(newUser);
       user.password = undefined;
-      return res.json({ message: 'Success', user });
+      return res.json({ message: 'Success', data: user });
     } catch (err) {
-      const error = dbErrors(err);
-      return res
-        .status(400)
-        .json({ message: 'Admin registration failed', error });
+      return badRequest(res, err, 'Admin registration failed');
     }
   }
 
@@ -25,6 +22,7 @@ export default class AdminController {
       const filters = {};
       const { type: adminType } = req.query;
       const type = adminType ? adminType.toString().toLowerCase() : null;
+
       if (type && ADMIN_TYPES.includes(type)) {
         filters.type = type;
       }
@@ -33,13 +31,12 @@ export default class AdminController {
           ...filters
         },
         attributes: {
-          exclude: ['password']
+          // exclude: ['password']
         }
       });
-      return res.json({ message: 'success', admins: allAdmins });
+      return res.json({ message: 'Success', data: allAdmins });
     } catch (err) {
-      const message = err.message || 'Bad request';
-      return res.status(400).json({ message });
+      return badRequest(res, err);
     }
   }
 
@@ -53,12 +50,11 @@ export default class AdminController {
         }
       });
       if (!admin) {
-        return res.status(404).json({ message: 'Admin not found' });
+        return notFound(res);
       }
-      return res.json({ message: 'Success', admin });
+      return res.json({ message: 'Success', data: admin });
     } catch (err) {
-      const message = err.message || 'Bad request';
-      return res.status(400).json({ message });
+      return badRequest(res, err);
     }
   }
 }

@@ -6,18 +6,21 @@ import authorize from '../../../middleware/authorize';
 import { superAdmin, accountantAdmin } from '../../../utils/roles';
 
 const adminRouters = Router();
-
+adminRouters.all('*', authenticate);
 adminRouters
-  .post('/admins', adminValidator, AdminController.create)
+  .post(
+    '/admins',
+    authorize(superAdmin),
+    adminValidator,
+    AdminController.create
+  )
   .get(
     '/admins',
-    authenticate,
     authorize(superAdmin, accountantAdmin),
     AdminController.findAll
   )
   .get(
     '/admins/:id',
-    authenticate,
     authorize(superAdmin, accountantAdmin),
     AdminController.findOne
   );

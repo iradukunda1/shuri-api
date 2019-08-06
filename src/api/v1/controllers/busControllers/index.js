@@ -1,5 +1,5 @@
 import db from '../../../../models';
-import dbErrors from '../../../../utils/dbErrors';
+import { notFound, badRequest } from '../../../../utils/response';
 
 const { Bus, BusCompany } = db;
 
@@ -15,12 +15,9 @@ export default class BusController {
       });
       return res
         .status(201)
-        .json({ message: 'Bus registered successfully', bus });
+        .json({ message: 'Bus registered successfully', data: bus });
     } catch (err) {
-      const error = dbErrors(err);
-      return res
-        .status(400)
-        .json({ message: 'Bus registration failed', error });
+      return badRequest(res, err);
     }
   }
 
@@ -41,10 +38,9 @@ export default class BusController {
           }
         ]
       });
-      return res.status(200).json({ message: 'success', data });
+      return res.status(200).json({ message: 'Success', data });
     } catch (err) {
-      const error = err.message || 'Bad request';
-      return res.status(400).json({ error });
+      return badRequest(res, err);
     }
   }
 
@@ -57,10 +53,12 @@ export default class BusController {
           busCompanyId: companyId
         }
       });
-      return res.status(200).json({ message: 'success', bus });
+      if (!bus) {
+        return notFound(res);
+      }
+      return res.status(200).json({ message: 'Success', data: bus });
     } catch (err) {
-      const error = err.message || 'Bad request';
-      return res.status(400).json({ error });
+      return badRequest(res, err);
     }
   }
 
@@ -69,7 +67,7 @@ export default class BusController {
       const { id } = req.params;
       const { id: busCompanyId } = req.user;
       const { plateNumber, model } = req.body;
-      const bus = await Bus.Bus.findOne({
+      const bus = await Bus.findOne({
         where: {
           id,
           busCompanyId
@@ -78,10 +76,9 @@ export default class BusController {
       const data = await bus.update({ plateNumber, model });
       return res
         .status(201)
-        .json({ message: 'Bus updated successfully', bus: data });
+        .json({ message: 'Bus updated successfully', data });
     } catch (err) {
-      const error = dbErrors(err);
-      return res.status(400).json({ error });
+      return badRequest(res, err, 'Bus update failed');
     }
   }
 
@@ -95,11 +92,13 @@ export default class BusController {
           busCompanyId
         }
       });
+      if (!bus) {
+        return notFound(res);
+      }
       await bus.destroy();
       return res.status(200).json({ message: 'Bus deleted successfully' });
     } catch (err) {
-      const error = err.message || 'Bad request';
-      return res.status(400).json({ error });
+      return badRequest(res, err);
     }
   }
 }

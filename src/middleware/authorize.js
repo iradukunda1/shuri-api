@@ -6,7 +6,7 @@ export default (...roles) => {
     if (req.user && isAllowed(req.user.role)) {
       return next();
     }
-    return res.status(404).json({
+    return res.status(401).json({
       error: 'Access is denied',
       message:
         'You may not have the appropriate permissions to perform this action'
