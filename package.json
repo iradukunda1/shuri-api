@@ -32,6 +32,7 @@
   },
   "homepage": "https://gitlab.com/shuri-dev/shuri-api#readme",
   "dependencies": {
+    "@casl/ability": "^3.1.2",
     "@hapi/joi": "^15.1.0",
     "bcrypt": "^3.0.6",
     "dotenv": "^8.0.0",
