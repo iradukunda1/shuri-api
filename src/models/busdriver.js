@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const busDriver = sequelize.define(
+  const BusDriver = sequelize.define(
     'BusDriver',
     {
       id: {
@@ -15,6 +15,10 @@ module.exports = (sequelize, DataTypes) => {
       driverId: {
         type: DataTypes.UUID,
         allowNull: false
+      },
+      companyId: {
+        type: DataTypes.UUID,
+        allowNull: false
       }
     },
 
@@ -22,6 +26,5 @@ module.exports = (sequelize, DataTypes) => {
       tableName: 'BusDrivers'
     }
   );
-
-  return busDriver;
+  return BusDriver;
 };

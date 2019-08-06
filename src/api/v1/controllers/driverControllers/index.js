@@ -1,7 +1,7 @@
 import db from '../../../../models';
 import { badRequest, notFound } from '../../../../utils/response';
 
-const { Driver, BusCompany } = db;
+const { Driver, BusCompany, Bus, BusDriver } = db;
 
 export default class DriverController {
   static async create(req, res) {
@@ -61,7 +61,15 @@ export default class DriverController {
         },
         attributes: {
           exclude: ['password']
-        }
+        },
+        include: [
+          {
+            model: Bus,
+            attributes: {
+              exclude: ['BusDriver']
+            }
+          }
+        ]
       });
       if (!driver) {
         return notFound(res);
@@ -111,6 +119,71 @@ export default class DriverController {
       return res.status(200).json({ message: 'Driver removed successfully' });
     } catch (err) {
       return badRequest(res, err);
+    }
+  }
+
+  static async assignBus(req, res) {
+    try {
+      const { id, busId } = req.params;
+      const { id: companyId } = req.user;
+      const driver = await Driver.findOne({
+        where: {
+          id,
+          busCompanyId: companyId
+        }
+      });
+      if (!driver) {
+        return notFound(res);
+      }
+      const bus = await Bus.findOne({
+        where: {
+          id: busId,
+          busCompanyId: companyId
+        }
+      });
+      if (!bus) {
+        return notFound(res);
+      }
+
+      const alreadyAssigned = await driver.hasBus(bus);
+      if (alreadyAssigned) {
+        throw new Error('Driver already assigned to the bus!!!');
+      }
+      const response = await driver.addBus(bus, {
+        through: {
+          companyId
+        }
+      });
+
+      return res.status(201).json({
+        message: 'Driver assigned to bus successfully',
+        data: response
+      });
+    } catch (error) {
+      return badRequest(res, error);
+    }
+  }
+
+  static async removeBus(req, res) {
+    try {
+      const { id, busId } = req.params;
+      const { id: companyId } = req.user;
+      const record = await BusDriver.findOne({
+        where: {
+          driverId: id,
+          busId,
+          companyId
+        }
+      });
+      if (!record) {
+        return notFound(res);
+      }
+      await record.destroy();
+      return res
+        .status(200)
+        .json({ message: 'Driver removed from bus successfully' });
+    } catch (error) {
+      return badRequest(res, error);
     }
   }
 }

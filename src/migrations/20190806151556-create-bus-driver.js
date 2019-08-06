@@ -15,6 +15,10 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false
       },
+      companyId: {
+        type: Sequelize.UUID,
+        allowNull: false
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
