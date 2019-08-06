@@ -64,6 +64,5 @@ module.exports = (sequelize, DataTypes) => {
       hooks: true
     });
   };
-
   return Driver;
 };
