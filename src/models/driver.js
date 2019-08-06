@@ -57,5 +57,12 @@ module.exports = (sequelize, DataTypes) => {
     }
     return data;
   };
+
+  Driver.associate = models => {
+    Driver.belongsTo(models.BusCompany, {
+      foreignKey: 'busCompanyId',
+      hooks: true
+    });
+  };
   return Driver;
 };

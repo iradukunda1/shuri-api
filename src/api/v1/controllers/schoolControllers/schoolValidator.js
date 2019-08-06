@@ -17,7 +17,23 @@ const Schemas = {
       .label('Sector is required'),
     cell: Joi.string()
       .required()
-      .label('Cell is required')
+      .label('Cell is required'),
+    principal: Joi.object().keys({
+      firstName: Joi.string(),
+      lastName: Joi.string(),
+      email: Joi.string()
+        .email()
+        .required()
+        .label('Invalid principal email'),
+      password: Joi.string()
+        .min(6)
+        .required()
+        .label('Password should have minimum of 6 characters'),
+      phoneNumber: Joi.string()
+        .min(10)
+        .max(13)
+        .label('Invalid principal phone number')
+    })
   })
 };
 export default (req, res, next) => {

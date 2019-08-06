@@ -1,9 +1,21 @@
 import { isEmpty } from 'lodash';
 import db from '../../../../models';
-import dbErrors from '../../../../utils/dbErrors';
+import { notFound, badRequest } from '../../../../utils/response';
 
-const { School } = db;
-
+const { School, User } = db;
+/* 
+{
+	"principal":{
+		"email":"principal@school.com",
+		"password":"password"
+	},
+	"name":"KEP DAMN",
+	"sector":"Kimironko",
+	"district":"Gasabo",
+	"province":"Kigali",
+	"cell":"Kimironko"
+} 
+*/
 export default class SchoolController {
   static async create(req, res) {
     try {
@@ -15,24 +27,52 @@ export default class SchoolController {
         sector: newSchool.sector,
         cell: newSchool.cell
       } = req.body);
-      const school = await School.create(newSchool);
+      const user = await User.findOne({
+        where: {
+          email: req.body.principal.email
+        }
+      });
+      if (user) {
+        throw new Error('Email already taken');
+      }
+      const school = await School.create(
+        {
+          ...newSchool,
+          Users: [
+            {
+              ...req.body.principal,
+              type: 'PRINCIPAL'
+            }
+          ]
+        },
+        {
+          include: [User]
+        }
+      );
+
       return res
         .status(201)
         .json({ message: 'School registered successfully', school });
     } catch (err) {
-      const error = dbErrors(err);
-      return res
-        .status(400)
-        .json({ message: 'School registration failed', error });
+      return badRequest(res, err);
     }
   }
 
   static async findAll(_req, res) {
     try {
-      const schools = await School.findAll();
+      const schools = await School.findAll({
+        include: [
+          {
+            model: User,
+            attributes: {
+              exclude: ['password']
+            }
+          }
+        ]
+      });
       return res.json({ message: 'success', schools });
     } catch (error) {
-      return res.status(400).json({ error: error.message || 'Bad request' });
+      return badRequest(res, error);
     }
   }
 
@@ -56,22 +96,30 @@ export default class SchoolController {
         .status(201)
         .json({ message: 'School update successfully', school: updateSchool });
     } catch (err) {
-      const error = dbErrors(err);
-      return res.status(400).json({ message: 'School update failed', error });
+      return badRequest(res, err);
     }
   }
 
   static async find(req, res) {
     try {
       const { id } = req.params;
-      const school = await School.findOne({ where: { id } });
+      const school = await School.findOne({
+        where: { id },
+        include: [
+          {
+            model: User,
+            attributes: {
+              exclude: ['password']
+            }
+          }
+        ]
+      });
       if (isEmpty(school)) {
-        return res.status(404).json({ message: 'Record not found' });
+        return notFound(res);
       }
       return res.json({ message: 'success', school });
     } catch (err) {
-      const error = err.message || 'Bad request';
-      return res.status(400).json({ error });
+      return badRequest(res, err);
     }
   }
 
@@ -80,13 +128,12 @@ export default class SchoolController {
       const { id } = req.params;
       const school = await School.findOne({ where: { id } });
       if (isEmpty(school)) {
-        return res.status(404).json({ message: 'Record not found' });
+        return notFound(res);
       }
       await school.destroy();
       return res.status(202).json({ message: 'Record deleted' });
     } catch (err) {
-      const error = err.message || 'Bad request';
-      return res.status(400).json({ error });
+      return badRequest(res, err);
     }
   }
 }

@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('Drivers', {
+    return queryInterface.createTable('Users', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -8,25 +8,32 @@ module.exports = {
         defaultValue: Sequelize.UUIDV4
       },
       firstName: {
-        type: Sequelize.STRING,
-        allowNull: false
+        type: Sequelize.STRING
       },
       lastName: {
+        type: Sequelize.STRING
+      },
+      email: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
+      },
+      phoneNumber: {
+        type: Sequelize.STRING,
+        unique: true
       },
       password: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      phoneNumber: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      username: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        unique: true
+      type: {
+        /**
+         * TM: transport manager
+         * DOD: director of discipline
+         * PRINCIPAL: school admin or general manager
+         */
+        type: Sequelize.ENUM('TM', 'DOD', 'PRINCIPAL'),
+        defaultValue: 'TM'
       },
       createdAt: {
         allowNull: false,
@@ -36,15 +43,15 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      busCompanyId: {
+      schoolId: {
         allowNull: false,
         type: Sequelize.UUID,
         onDelete: 'CASCADE',
-        references: { model: 'BusCompanies', key: 'id' }
+        references: { model: 'Schools', key: 'id' }
       }
     });
   },
   down: (queryInterface, _Sequelize) => {
-    return queryInterface.dropTable('Drivers');
+    return queryInterface.dropTable('Users');
   }
 };

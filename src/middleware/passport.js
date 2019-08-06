@@ -15,10 +15,14 @@ passport.use(
   new Strategy(options, async (payload, done) => {
     const { resource, id } = payload;
     try {
-      const user = await database[resource].findOne({ id });
+      const user = await database[resource].findByPk(id);
       if (user) {
-        const role = user.role || resource.toLowerCase();
-        return done(null, { id: user.id, resource, role });
+        const role = {
+          type: user.role || user.type || undefined,
+          resource: resource.toLowerCase()
+        };
+        user.dataValues.password = undefined;
+        return done(null, { ...user.dataValues, resource, role });
       }
       return done(null, false);
     } catch (error) {

@@ -22,6 +22,12 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
+      },
+      busCompanyId: {
+        allowNull: false,
+        type: Sequelize.UUID,
+        onDelete: 'CASCADE',
+        references: { model: 'BusCompanies', key: 'id' }
       }
     });
   },
