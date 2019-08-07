@@ -254,4 +254,89 @@ describe('Driver Controller', () => {
         });
     });
   });
+
+  describe('Assign Bus', () => {
+    test('should bus company assign bus to a driver', () => {
+      return request
+        .post(
+          '/api/v1/drivers/36e46bea-3f99-44ee-a610-23e7a997a678/buses/36e46bea-3f99-44ee-a610-23e7a997c678'
+        )
+        .set('Authorization', `Bearer ${companyToken}`)
+        .expect(201)
+        .then(res => {
+          const { message } = res.body;
+          expect(message).toMatch(/Driver assigned to bus successfully/);
+        });
+    });
+
+    test('should bus company assign bus to a driver', () => {
+      return request
+        .post(
+          '/api/v1/drivers/36e46bea-3f99-44ee-a610-23e7a997a678/buses/36e46bea-3f99-44ee-a610-23e7a997c678'
+        )
+        .set('Authorization', `Bearer ${companyToken}`)
+        .expect(400)
+        .then(res => {
+          const {
+            error: { message }
+          } = res.body;
+          expect(message).toMatch(/Driver already assigned to the bus!!!/);
+        });
+    });
+
+    test('should bus company assign bus to a driver', () => {
+      return request
+        .post(
+          '/api/v1/drivers/36e46bea-3f99-44ee-a610-23e7a997a677/buses/36e46bea-3f99-44ee-a610-23e7a997c678'
+        )
+        .set('Authorization', `Bearer ${companyToken}`)
+        .expect(404);
+    });
+
+    test('should bus company assign bus to a driver', () => {
+      return request
+        .post(
+          '/api/v1/drivers/36e46bea-3f99-44ee-a610-23e7a997a678/buses/36e46bea-3f99-44ee-a610-23e7a997c697'
+        )
+        .set('Authorization', `Bearer ${companyToken}`)
+        .expect(404);
+    });
+  });
+
+  describe('Remove driver from the bus', () => {
+    test('should bus company assign bus to a driver', () => {
+      return request
+        .delete(
+          '/api/v1/drivers/36e46bea-3f99-44ee-a610-23e7a997a678/buses/36e46bea-3f99-44ee-a610-23e7a997c678'
+        )
+        .set('Authorization', `Bearer ${companyToken}`)
+        .expect(200)
+        .then(res => {
+          const { message } = res.body;
+          expect(message).toMatch(/Driver removed from bus successfully/);
+        });
+    });
+
+    test('should bus company assign bus to a driver', () => {
+      return request
+        .delete(
+          '/api/v1/drivers/36e46bea-3f99-44ee-a610-23e7a997a678/buses/36e46bea-3f99-44ee-a610-23e7a997c678'
+        )
+        .set('Authorization', `Bearer ${companyToken}`)
+        .expect(404)
+        .then(res => {
+          const { error } = res.body;
+          expect(error).toMatch(/Record not found/);
+        });
+    });
+
+    test('should bus company assign bus to a driver', () => {
+      return request
+        .delete(
+          '/api/v1/drivers/36e46bea-3f99-44ee-a610-23e7a997a6akdjf/buses/36e46bea-3f99-44ee-a610-23e7a997c678'
+        )
+        .set('Authorization', `Bearer ${companyToken}`)
+        .expect(400);
+    });
+  });
 });
