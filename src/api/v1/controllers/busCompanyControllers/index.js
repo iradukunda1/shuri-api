@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import db from '../../../../models';
 import { badRequest, notFound } from '../../../../utils/response';
 
-const { BusCompany } = db;
+const { BusCompany, School, SchoolCompanyPartnership: Partners } = db;
 export default class CompanyController {
   static async create(req, res) {
     try {
@@ -81,6 +81,60 @@ export default class CompanyController {
       return res.status(200).json({ message: 'Record deleted' });
     } catch (err) {
       return badRequest(res, err);
+    }
+  }
+
+  static async partners(req, res) {
+    try {
+      const { id } = req.params;
+      const data = await Partners.findAll({
+        where: {
+          companyId: id
+        },
+        include: [
+          {
+            model: School
+          }
+        ]
+      });
+      return res.status(200).json({ message: 'Success', data });
+    } catch (error) {
+      return badRequest(res, error);
+    }
+  }
+
+  static async approvePartner(req, res) {
+    try {
+      const { schoolId } = req.params;
+      const { id: companyId } = req.user;
+      const record = await Partners.findOne({ where: { schoolId, companyId } });
+      if (!record) {
+        return notFound(res);
+      } if (record.status === 'approved') {
+        throw new Error('Request already approved');
+      }
+      await record.update({ status: 'approved' });
+      return res.status(200).json({ message: 'Partnership request approved ' });
+    } catch (error) {
+      return badRequest(res, error);
+    }
+  }
+
+  static async rejectPartner(req, res) {
+    try {
+      const { schoolId } = req.params;
+      const { id: companyId } = req.user;
+      const record = await Partners.findOne({ where: { schoolId, companyId } });
+      if (!record) {
+        return notFound(res);
+      }
+      if (record.status === 'rejected') {
+        throw new Error('Request already rejected');
+      }
+      await record.update({ status: 'rejected' });
+      return res.status(200).json({ message: 'Partnership request rejected ' });
+    } catch (error) {
+      return badRequest(res, error);
     }
   }
 }

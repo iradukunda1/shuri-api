@@ -2,7 +2,7 @@ import { isEmpty } from 'lodash';
 import db from '../../../../models';
 import { notFound, badRequest } from '../../../../utils/response';
 
-const { School, User } = db;
+const { School, User, BusCompany: Company } = db;
 /* 
 {
 	"principal":{
@@ -110,7 +110,16 @@ export default class SchoolController {
     try {
       const { id } = req.params;
       const school = await School.findOne({
-        where: { id }
+        where: { id },
+        include: [
+          {
+            model: Company,
+            as: 'companies',
+            attributes: {
+              exclude: ['password']
+            }
+          }
+        ]
       });
       if (isEmpty(school)) {
         return notFound(res);
@@ -132,6 +141,29 @@ export default class SchoolController {
       return res.status(200).json({ message: 'School removed successfully' });
     } catch (err) {
       return badRequest(res, err);
+    }
+  }
+
+  static async partnershipRequest(req, res) {
+    try {
+      const { schoolId } = req.user;
+      const { companyId } = req.params;
+      const school = await School.findByPk(schoolId);
+      const company = await Company.findByPk(companyId);
+      if (!company) {
+        return notFound(res);
+      }
+      const partnershipExist = await school.hasCompany(company);
+      if (partnershipExist) {
+        throw new Error(`${company.name} is already your partner`);
+      }
+      const response = await school.addCompany(company);
+      return res.status(201).json({
+        message: 'Partnership request sent successfully',
+        data: response
+      });
+    } catch (error) {
+      return badRequest(res, error);
     }
   }
 }

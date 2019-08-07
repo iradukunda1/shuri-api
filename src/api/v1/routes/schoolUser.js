@@ -5,7 +5,6 @@ import validate from '../controllers/schoolUserControllers/validator';
 import authorize from '../../../middleware/authorize';
 import isPrincipal from '../controllers/schoolUserControllers/isPrincipal';
 import { schoolPrincipal } from '../../../utils/roles';
-// import authorize from '../../../middleware/authorize';
 
 const routers = Router();
 routers.all('*', authenticate);
