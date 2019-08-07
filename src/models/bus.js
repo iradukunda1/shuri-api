@@ -33,6 +33,11 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'busCompanyId',
       hooks: true
     });
+    Bus.belongsToMany(models.Driver, {
+      foreignKey: 'busId',
+      through: models.BusDriver
+      // as: 'buses'
+    });
   };
 
   return Bus;

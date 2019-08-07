@@ -1,7 +1,7 @@
 # Shuri-API
 
-[![pipeline status](https://gitlab.com/shuri-dev/shuri-api/badges/ch-sprint-1-test/pipeline.svg)](https://gitlab.com/shuri-dev/shuri-api/commits/ch-sprint-1-test)
-[![coverage report](https://gitlab.com/shuri-dev/shuri-api/badges/ch-sprint-1-test/coverage.svg)](https://gitlab.com/shuri-dev/shuri-api/commits/ch-sprint-1-test)
+[![pipeline status](https://gitlab.com/shuri-dev/shuri-api/badges/develop/pipeline.svg)](https://gitlab.com/shuri-dev/shuri-api/commits/develop)
+[![coverage report](https://gitlab.com/shuri-dev/shuri-api/badges/develop/coverage.svg)](https://gitlab.com/shuri-dev/shuri-api/commits/develop)
 
 ## Code style
 
