@@ -3,7 +3,11 @@ import SchoolController from '../controllers/schoolControllers';
 import authenticate from '../../../middleware/authenticate';
 import validateSchool from '../controllers/schoolControllers/schoolValidator';
 import authorize from '../../../middleware/authorize';
-import { superAdmin, accountantAdmin } from '../../../utils/roles';
+import {
+  superAdmin,
+  accountantAdmin,
+  schoolPrincipal
+} from '../../../utils/roles';
 
 const schoolRouters = Router();
 schoolRouters.all('*', authenticate);
@@ -20,6 +24,11 @@ schoolRouters
     '/schools/:id',
     authorize(superAdmin, accountantAdmin),
     SchoolController.update
+  )
+  .post(
+    '/partners/:companyId',
+    authorize(schoolPrincipal),
+    SchoolController.partnershipRequest
   )
   .delete(
     '/schools/:id',

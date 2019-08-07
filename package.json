@@ -13,7 +13,7 @@
     "db:seed": "./node_modules/.bin/sequelize  db:seed:all --env test",
     "db:migrate:undo:all": "./node_modules/.bin/sequelize db:migrate:undo:all --env test",
     "db:reset": "npm run db:migrate:undo:all && npm run db:migrate && npm run db:seed",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix --max-warnings=0"
   },
   "repository": {
     "type": "git",

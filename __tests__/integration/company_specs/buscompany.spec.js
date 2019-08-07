@@ -280,11 +280,12 @@ describe('Bus Company Controller', () => {
         });
     });
 
-    test('should allow admin to delete bus company', done => {
+  test('should allow admin to delete bus company', done => {
       return request
         .delete(`/api/v1/companies/kajhdkfhakjhfjk`)
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(400, done);
     });
   });
+
 });

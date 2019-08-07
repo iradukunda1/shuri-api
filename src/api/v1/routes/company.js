@@ -3,7 +3,7 @@ import CompanyController from '../controllers/busCompanyControllers';
 import validateCompany from '../controllers/busCompanyControllers/validateCompany';
 import authenticate from '../../../middleware/authenticate';
 import authorize from '../../../middleware/authorize';
-import { superAdmin, accountantAdmin } from '../../../utils/roles';
+import { superAdmin, accountantAdmin, busCompany } from '../../../utils/roles';
 
 const companyRouters = Router();
 companyRouters.all('*', authenticate);
@@ -22,6 +22,17 @@ companyRouters
     CompanyController.update
   )
   .get('/companies/:id', CompanyController.find)
+  .get('/companies/:id/partners', CompanyController.partners)
+  .put(
+    '/partners/:schoolId/approve',
+    authorize(busCompany),
+    CompanyController.approvePartner
+  )
+  .put(
+    '/partners/:schoolId/reject',
+    authorize(busCompany),
+    CompanyController.rejectPartner
+  )
   .delete(
     '/companies/:id',
     authorize(superAdmin, accountantAdmin),
