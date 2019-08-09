@@ -32,7 +32,7 @@ module.exports = {
          * DOD: director of discipline
          * PRINCIPAL: school admin or general manager
          */
-        type: Sequelize.ENUM('TM', 'DOD', 'PRINCIPAL'),
+        type: Sequelize.ENUM('TM', 'DOD', 'PRINCIPAL', 'TEACHER'),
         defaultValue: 'TM'
       },
       createdAt: {

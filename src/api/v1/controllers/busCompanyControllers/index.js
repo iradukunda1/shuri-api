@@ -1,18 +1,23 @@
 import { isEmpty } from 'lodash';
 import db from '../../../../models';
 import { badRequest, notFound } from '../../../../utils/response';
+import generatePwd from '../../../../utils/genPwd';
 
 const { BusCompany, School, SchoolCompanyPartnership: Partners } = db;
 export default class CompanyController {
   static async create(req, res) {
     try {
-      const newUser = {};
+      const newCompany = {
+        password: generatePwd() // password to be sent to the user and changed
+      };
       ({
-        name: newUser.name,
-        email: newUser.email,
-        password: newUser.password
+        name: newCompany.name,
+        email: newCompany.email,
+        country: newCompany.country,
+        district: newCompany.district,
+        phoneNumber: newCompany.phoneNumber,
       } = req.body);
-      const company = await BusCompany.create(newUser);
+      const company = await BusCompany.create(newCompany);
       company.password = undefined;
       return res.status(201).json({ message: 'Success', data: company });
     } catch (err) {

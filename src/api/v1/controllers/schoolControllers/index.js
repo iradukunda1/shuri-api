@@ -1,6 +1,7 @@
 import { isEmpty } from 'lodash';
 import db from '../../../../models';
 import { notFound, badRequest } from '../../../../utils/response';
+import generatePassword from '../../../../utils/genPwd'
 
 const { School, User, BusCompany: Company } = db;
 /* 
@@ -10,10 +11,11 @@ const { School, User, BusCompany: Company } = db;
 		"password":"password"
 	},
 	"name":"KEP DAMN",
-	"sector":"Kimironko",
+	"country":"Rwanda",
 	"district":"Gasabo",
-	"province":"Kigali",
-	"cell":"Kimironko"
+	"phoneNumber":"Kigali",
+  "longitude":"some"
+  "latitude":"some"
 } 
 */
 export default class SchoolController {
@@ -22,10 +24,11 @@ export default class SchoolController {
       const newSchool = {};
       ({
         name: newSchool.name,
-        province: newSchool.province,
+        country: newSchool.country,
         district: newSchool.district,
-        sector: newSchool.sector,
-        cell: newSchool.cell
+        phoneNumber: newSchool.phoneNumber,
+        longitude: newSchool.longitude,
+        latitude: newSchool.latitude
       } = req.body);
       const user = await User.findOne({
         where: {
@@ -41,6 +44,8 @@ export default class SchoolController {
           users: [
             {
               ...req.body.principal,
+              password: generatePassword(), // password to be send to the user and user change them.
+              phoneNumber: newSchool.phoneNumber,
               type: 'PRINCIPAL'
             }
           ]
@@ -87,11 +92,10 @@ export default class SchoolController {
       const { id } = req.params;
       const attributes = {};
       ({
-        name: attributes.name,
-        province: attributes.province,
+         name: attributes.name,
+        country: attributes.province,
         district: attributes.district,
-        sector: attributes.sector,
-        cell: attributes.cell
+        phoneNumber: attributes.phoneNumber,
       } = req.body);
       const school = await School.findOne({ where: { id } });
       if (isEmpty(school)) {

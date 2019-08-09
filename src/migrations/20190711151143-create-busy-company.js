@@ -15,9 +15,24 @@ module.exports = {
         type: Sequelize.STRING,
         unique: true
       },
-      password: {
+       password: {
         type: Sequelize.STRING
       },
+      phoneNumber:{
+        type: Sequelize.STRING,
+        unique: true
+      },
+      district: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+      country: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
+     description:{
+       type: Sequelize.STRING(250),
+     },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

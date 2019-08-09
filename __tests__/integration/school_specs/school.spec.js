@@ -5,19 +5,17 @@ let adminToken;
 let schoolId;
 const newSchool = {
   name: 'Kepler',
-  province: 'Kigali',
+  country: 'Rwanda',
   district: 'Gasabo',
-  sector: 'Kimironko',
-  cell: 'Bumbogo',
+  phoneNumber: '0789277275',
   principal: {
     email: 'principal@kepler.org',
-    password: 'password'
   }
 };
 describe('School Controller', () => {
   beforeAll(async () => {
     const response = await request.post('/api/v1/admins/auth').send({
-      username: 'admin-1',
+      email: 'admin1@example.com',
       password: 'password'
     });
     const { token } = response.body;
@@ -38,15 +36,14 @@ describe('School Controller', () => {
             expect.arrayContaining([
               'id',
               'name',
-              'province',
+              'country',
               'district',
-              'sector',
-              'cell',
+              'phoneNumber',
               'users',
               'updatedAt',
               'createdAt'
             ])
-          );
+         );
           expect(Object.keys(data.users[0])).toEqual(
             expect.arrayContaining(['id', 'schoolId', 'email']),
             expect.not.arrayContaining(['password'])
@@ -258,5 +255,5 @@ describe('School Controller', () => {
           expect(message).toMatch(/School removed successfully/);
         });
     });
-  });
+ });
 });

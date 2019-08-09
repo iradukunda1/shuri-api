@@ -2,37 +2,31 @@ import Joi from '@hapi/joi';
 import joiError from '../../../../utils/joiError';
 
 const Schemas = {
-  POST: Joi.object().keys({
+  POST:  Joi.object().keys( {
     name: Joi.string()
       .required()
       .label('Name is required'),
-    province: Joi.string()
+    country: Joi.string()
       .required()
-      .label('Province is required'),
+      .label('Country is required'),
     district: Joi.string()
       .required()
       .label('District is required'),
-    sector: Joi.string()
+    phoneNumber: Joi.string()
       .required()
-      .label('Sector is required'),
-    cell: Joi.string()
-      .required()
-      .label('Cell is required'),
-    principal: Joi.object().keys({
+      .min(10)
+      .max(12)
+      .label('Invalid phone number'),
+    longitude: Joi.string(),
+    latitude: Joi.string(),
+    principal:  Joi.object().keys( {
       firstName: Joi.string(),
       lastName: Joi.string(),
       email: Joi.string()
         .email()
         .required()
         .label('Invalid principal email'),
-      password: Joi.string()
-        .min(6)
-        .required()
-        .label('Password should have minimum of 6 characters'),
-      phoneNumber: Joi.string()
-        .min(10)
-        .max(13)
-        .label('Invalid principal phone number')
+      password: Joi.string().min(4).label('Password too short')
     })
   })
 };

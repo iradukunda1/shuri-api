@@ -7,11 +7,11 @@ export default class BusController {
   static async create(req, res) {
     try {
       const { model, plateNumber } = req.body;
-      const { companyId } = req.params;
+      const { id } = req.user;
       const bus = await Bus.create({
         model,
         plateNumber,
-        busCompanyId: companyId
+        busCompanyId: id
       });
       return res
         .status(201)
@@ -46,11 +46,10 @@ export default class BusController {
 
   static async find(req, res) {
     try {
-      const { id, companyId } = req.params;
+      const { id} = req.params;
       const bus = await Bus.findOne({
         where: {
-          id,
-          busCompanyId: companyId
+          id
         }
       });
       if (!bus) {

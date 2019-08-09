@@ -9,20 +9,20 @@ const busRouters = Router();
 busRouters.all('*', authenticate);
 busRouters
   .post(
-    '/companies/:companyId/buses',
+    '/buses',
     validate,
     authorize(busCompany),
     BusController.create
   )
   .get('/companies/:companyId/buses', BusController.findAll)
-  .get('/companies/:companyId/buses/:id', BusController.find)
+  .get('/buses/:id', BusController.find)
   .put(
-    '/companies/:companyId/buses/:id',
+    '/buses/:id',
     authorize(busCompany),
     BusController.update
   )
   .delete(
-    '/companies/:companyId/buses/:id',
+    '/buses/:id',
     authorize(busCompany),
     BusController.destroy
   );

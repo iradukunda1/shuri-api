@@ -8,12 +8,13 @@ describe('Authentication Controller', () => {
       return request
         .post('/api/v1/admins/auth')
         .send({
-          username: 'shuri-app',
+          email: 'shuri-app@wxampl.com',
           password: 'hello'
         })
         .then(res => {
-          expect(res.body).toEqual(
-            expect.objectContaining({ error: 'Invalid username/password' })
+          const {error} = res.body
+          expect(error).toEqual(
+            expect.objectContaining({ message: 'Invalid email/password' })
           );
         });
     });
@@ -26,8 +27,9 @@ describe('Authentication Controller', () => {
           password: 'hello'
         })
         .then(res => {
-          expect(res.body).toEqual(
-            expect.objectContaining({ error: 'Invalid email/password' })
+          const {error} = res.body
+          expect(error).toEqual(
+            expect.objectContaining({ message: 'Invalid email/password' })
           );
         });
     });
@@ -40,8 +42,9 @@ describe('Authentication Controller', () => {
           password: 'hello'
         })
         .then(res => {
-          expect(res.body).toEqual(
-            expect.objectContaining({ error: 'Invalid email/password' })
+          const {error} =res.body
+          expect(error).toEqual(
+            expect.objectContaining({ message: 'Invalid email/password' })
           );
         });
     });
@@ -54,8 +57,9 @@ describe('Authentication Controller', () => {
           password: 'hello'
         })
         .then(res => {
-          expect(res.body).toEqual(
-            expect.objectContaining({ error: 'Invalid email/password' })
+          const {error} = res.body
+          expect(error).toEqual(
+            expect.objectContaining({ message: 'Invalid email/password' })
           );
         });
     });
@@ -67,8 +71,9 @@ describe('Authentication Controller', () => {
           password: 'hello'
         })
         .then(res => {
-          expect(res.body).toEqual(
-            expect.objectContaining({ error: 'Invalid email/password' })
+          const {error} = res.body
+          expect(error).toEqual(
+            expect.objectContaining({ message: 'Invalid email/password' })
           );
         });
     });
@@ -82,8 +87,9 @@ describe('Authentication Controller', () => {
         })
         .expect(400)
         .then(res => {
-          expect(res.body).toEqual(
-            expect.objectContaining({ error: 'Invalid email/password' })
+          const {error} = res.body
+          expect(error).toEqual(
+            expect.objectContaining({ message: 'Invalid email/password' })
           );
         });
     });

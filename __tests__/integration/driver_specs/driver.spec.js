@@ -24,7 +24,7 @@ describe('Driver Controller', () => {
   describe('Create New Driver', () => {
     test('should company add new driver successfully', () => {
       return request
-        .post('/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/drivers')
+        .post('/api/v1/drivers')
         .send({ ...newDriver })
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(201)
@@ -50,7 +50,7 @@ describe('Driver Controller', () => {
 
     test('should validate new driver inputs', () => {
       return request
-        .post('/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/drivers')
+        .post('/api/v1/drivers')
         .send({ ...newDriver, username: 'lu' })
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(400)
@@ -67,7 +67,7 @@ describe('Driver Controller', () => {
 
     test('should not register driver username twice', () => {
       return request
-        .post('/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/drivers')
+        .post('/api/v1/drivers')
         .send({ ...newDriver })
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(400)
@@ -81,7 +81,7 @@ describe('Driver Controller', () => {
   });
 
   describe('Get Driver', () => {
-    test('should authenticated user get bus company driver', () => {
+    test('should authenticated user get bus company drivers', () => {
       return request
         .get('/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/drivers')
 
@@ -109,7 +109,7 @@ describe('Driver Controller', () => {
     test('should find bus company driver by id', () => {
       return request
         .get(
-          `/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/drivers/${driverId}`
+          `/api/v1/drivers/${driverId}`
         )
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(200)
@@ -129,24 +129,11 @@ describe('Driver Controller', () => {
         });
     });
 
-    test('should not find bus if provided wrong bus company id', () => {
-      return request
-        .get(
-          `/api/v1/companies/f4d40af8-b73d-4715-bc7d-5513588a3560/drivers/${driverId}`
-        )
-        .set('Authorization', `Bearer ${companyToken}`)
-        .expect(404)
-        .then(res => {
-          expect(res.body).toEqual(
-            expect.objectContaining({ error: 'Record not found' })
-          );
-        });
-    });
 
     test('should error on invalid id form', () => {
       return request
         .get(
-          `/api/v1/companies/f4d40af8-b73d-4715-bc7d-5513588a3560/drivers/${driverId}-kaf`
+          `/api/v1/drivers/${driverId}-kaf`
         )
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(400)
@@ -163,7 +150,7 @@ describe('Driver Controller', () => {
     test('should not find bus if provided wrong bus company id', () => {
       return request
         .put(
-          `/api/v1/companies/f4d40af8-b73d-4715-bc7d-5513588a3560/drivers/36e46bea-3f99-88bb-a610-23e7a997a678`
+          `/api/v1/drivers/36e46bea-3f99-88bb-a610-23e7a997a690`
         )
         .send({ username: 'luc-tyaf' })
         .set('Authorization', `Bearer ${companyToken}`)
@@ -178,7 +165,7 @@ describe('Driver Controller', () => {
     test('should bus company update its own driver', () => {
       return request
         .put(
-          `/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/drivers/${driverId}`
+          `/api/v1/drivers/${driverId}`
         )
         .send({ firstName: 'luc-a', lastName: 'abayo-b' })
         .set('Authorization', `Bearer ${companyToken}`)
@@ -197,7 +184,7 @@ describe('Driver Controller', () => {
     test('should bus company update its own driver', () => {
       return request
         .put(
-          `/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/drivers/${driverId}-hadf`
+          `/api/v1/drivers/${driverId}-hadf`
         )
         .send({ firstName: 'luc-a', lastName: 'abayo-b' })
         .set('Authorization', `Bearer ${companyToken}`)
@@ -212,12 +199,11 @@ describe('Driver Controller', () => {
   });
 
   describe('Delete Bus Company Driver', () => {
-    test('should not find bus if provided wrong bus company id', () => {
+    test('should not find driver if provided wrong bus company id', () => {
       return request
         .delete(
-          `/api/v1/companies/f4d40af8-b73d-4715-bc7d-5513588a3560/drivers/36e46bea-3f99-88bb-a610-23e7a997a678`
+          `/api/v1/drivers/36e46bea-3f99-44ee-a610-23e7a997a689`
         )
-
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(404)
         .then(res => {
@@ -229,7 +215,7 @@ describe('Driver Controller', () => {
     test('should fail on invalid invalid id', () => {
       return request
         .delete(
-          `/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/drivers/${driverId}-hadf`
+          `/api/v1/drivers/${driverId}-hadf`
         )
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(400)
@@ -244,7 +230,7 @@ describe('Driver Controller', () => {
     test('should company delete its own driver', () => {
       return request
         .delete(
-          `/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/drivers/${driverId}`
+          `/api/v1/drivers/${driverId}`
         )
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(200)
