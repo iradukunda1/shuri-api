@@ -31,6 +31,11 @@ module.exports = (sequelize, DataTypes) => {
       through: models.SchoolCompanyPartnership,
       as: 'companies'
     });
+    School.hasMany(models.Classroom, {
+      onDelete: 'CASCADE',
+      foreignKey: 'schoolId',
+      as: 'classrooms'
+    });
   };
   return School;
 };

@@ -29,6 +29,10 @@ module.exports = (sequelize, DataTypes) => {
          */
         type: DataTypes.ENUM('TM', 'DOD', 'PRINCIPAL', 'TEACHER'),
         defaultValue: 'TM'
+      },
+      classroomId: {
+        type: DataTypes.UUID,
+        allowNull: true
       }
     },
     {
@@ -41,6 +45,9 @@ module.exports = (sequelize, DataTypes) => {
     User.belongsTo(models.School, {
       foreignKey: 'schoolId',
       hooks: true
+    });
+    User.belongsTo(models.Classroom, {
+      foreignKey: 'classroomId'
     });
   };
   return User;

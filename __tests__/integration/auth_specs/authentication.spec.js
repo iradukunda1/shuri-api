@@ -51,7 +51,7 @@ describe('Authentication Controller', () => {
 
     test('should return auth error: users', () => {
       return request
-        .post('/api/v1/users/auth')
+        .post('/api/v1/school-users/auth')
         .send({
           email: 'godamin@example.com',
           password: 'hello'
@@ -65,7 +65,7 @@ describe('Authentication Controller', () => {
     });
     test('should return auth error: users ', () => {
       return request
-        .post('/api/v1/users/auth')
+        .post('/api/v1/school-users/auth')
         .send({
           email: 'principal@school.org',
           password: 'hello'

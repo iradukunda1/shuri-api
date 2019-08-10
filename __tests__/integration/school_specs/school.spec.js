@@ -9,7 +9,7 @@ const newSchool = {
   district: 'Gasabo',
   phoneNumber: '0789277275',
   principal: {
-    email: 'principal@kepler.org',
+    email: 'principal@kepler.org'
   }
 };
 describe('School Controller', () => {
@@ -43,7 +43,7 @@ describe('School Controller', () => {
               'updatedAt',
               'createdAt'
             ])
-         );
+          );
           expect(Object.keys(data.users[0])).toEqual(
             expect.arrayContaining(['id', 'schoolId', 'email']),
             expect.not.arrayContaining(['password'])
@@ -255,5 +255,5 @@ describe('School Controller', () => {
           expect(message).toMatch(/School removed successfully/);
         });
     });
- });
+  });
 });

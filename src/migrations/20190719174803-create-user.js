@@ -48,6 +48,11 @@ module.exports = {
         type: Sequelize.UUID,
         onDelete: 'CASCADE',
         references: { model: 'Schools', key: 'id' }
+      },
+      classroomId: {
+        allowNull: true,
+        type: Sequelize.UUID,
+        references: { model: 'Classrooms', key: 'id' }
       }
     });
   },

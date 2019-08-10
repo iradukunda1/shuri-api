@@ -12,6 +12,16 @@ module.exports = {
           schoolId: '36e46bea-3f99-44ee-a610-23e7a997c678',
           createdAt: new Date(),
           updatedAt: new Date()
+        },
+        {
+          id: '6aa95e4a-c7cf-4281-814c-fca595c4f61c',
+          email: 'teacher@school.org',
+          password:
+            '$2b$10$CzfqN8d7S0hhrsMceldTO.Cv9Zxey2Ibd3U6Nmh95NSPyva5z.jeW',
+          type: 'TEACHER',
+          schoolId: '36e46bea-3f99-44ee-a610-23e7a997c678',
+          createdAt: new Date(),
+          updatedAt: new Date()
         }
       ],
       {}

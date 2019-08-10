@@ -4,9 +4,9 @@ import request from '../../helpers/request';
 const company = {
   name: 'Company 3',
   email: 'company_3@example.com',
-  phoneNumber:'0789277275',
-  country:'Rwanda',
-  district:'Gasabo'
+  phoneNumber: '0789277275',
+  country: 'Rwanda',
+  district: 'Gasabo'
 };
 let adminToken;
 let companyToken;
@@ -161,14 +161,14 @@ describe('Bus Company Controller', () => {
         });
     });
 
-    test('should return 404', done => {
+    test('should return 404', () => {
       return request
         .get('/api/v1/companies/36e46bea-3f99-99ee-a610-23e7a997a641')
         .set('Authorization', `Bearer ${companyToken}`)
+        .expect(404)
         .then(res => {
           const { error } = res.body;
           expect(error).toMatch(/Record not found/);
-          done();
         });
     });
 
@@ -281,11 +281,11 @@ describe('Bus Company Controller', () => {
         });
     });
 
-  test('should allow admin to delete bus company', done => {
+    test('should allow admin to delete bus company', done => {
       return request
         .delete(`/api/v1/companies/kajhdkfhakjhfjk`)
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(400, done);
     });
-});
+  });
 });

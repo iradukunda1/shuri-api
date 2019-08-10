@@ -1,13 +1,14 @@
 import Joi from '@hapi/joi';
-import {isEmpty} from 'lodash'
+import { isEmpty } from 'lodash';
 import joiError from '../../../../utils/joiError';
+import { TRANSPORT_MANAGER, DIRECTOR_OF_DISCIPLINE, TEACHER } from './types';
 
 export default (req, res, next) => {
-  const {users} = req.body;
-  if(isEmpty(users)){
-    return res.status(400).json({message: `List of user can't be empty`})
+  const { users } = req.body;
+  if (isEmpty(users)) {
+    return res.status(400).json({ message: `List of user can't be empty` });
   }
-  const user =  Joi.object().keys({
+  const user = Joi.object().keys({
     firstName: Joi.string(),
     lastName: Joi.string(),
     email: Joi.string()
@@ -20,18 +21,19 @@ export default (req, res, next) => {
     phoneNumber: Joi.string()
       .min(10)
       .max(13)
-      .label('Invalid phone number')
+      .label('Invalid phone number'),
+    type: Joi.string()
+      .valid([TRANSPORT_MANAGER, DIRECTOR_OF_DISCIPLINE, TEACHER])
+      .label(
+        `School user type should be either ${TRANSPORT_MANAGER}, ${DIRECTOR_OF_DISCIPLINE}, or ${TEACHER}`
+      )
   });
-  const usersSchema = Joi.array().items(user)
-  return Joi.validate(
-    users,
-    usersSchema,
-    (err, _value) => {
-      if (err) {
-        const error = joiError(err);
-        return res.status(400).json({ message: 'Validation error', error });
-      }
-      return next();
+  const usersSchema = Joi.array().items(user);
+  return Joi.validate(users, usersSchema, (err, _value) => {
+    if (err) {
+      const error = joiError(err);
+      return res.status(400).json({ message: 'Validation error', error });
     }
-  );
+    return next();
+  });
 };

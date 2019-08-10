@@ -1,7 +1,7 @@
 import { isEmpty } from 'lodash';
 import db from '../../../../models';
-import { notFound, badRequest } from '../../../../utils/response';
-import generatePassword from '../../../../utils/genPwd'
+import { notFound, badRequest, okResponse } from '../../../../utils/response';
+import generatePassword from '../../../../utils/genPwd';
 
 const { School, User, BusCompany: Company } = db;
 /* 
@@ -38,7 +38,7 @@ export default class SchoolController {
       if (user) {
         throw new Error('Principal email already taken');
       }
-      const school = await School.create(
+      const data = await School.create(
         {
           ...newSchool,
           users: [
@@ -60,9 +60,7 @@ export default class SchoolController {
         }
       );
 
-      return res
-        .status(201)
-        .json({ message: 'School registered successfully', data: school });
+      return okResponse(res, data, 201, 'School registered successfully');
     } catch (err) {
       return badRequest(res, err);
     }
@@ -70,18 +68,21 @@ export default class SchoolController {
 
   static async findAll(_req, res) {
     try {
-      const schools = await School.findAll({
+      const data = await School.findAll({
         include: [
           {
             model: User,
             as: 'users',
+            where: {
+              type: 'PRINCIPAL'
+            },
             attributes: {
-              exclude: ['password']
+              exclude: ['password', 'schoolId']
             }
           }
         ]
       });
-      return res.json({ message: 'Success', data: schools });
+      return okResponse(res, data, 200, 'Success');
     } catch (error) {
       return badRequest(res, error);
     }
@@ -92,19 +93,18 @@ export default class SchoolController {
       const { id } = req.params;
       const attributes = {};
       ({
-         name: attributes.name,
+        name: attributes.name,
         country: attributes.province,
         district: attributes.district,
-        phoneNumber: attributes.phoneNumber,
+        phoneNumber: attributes.phoneNumber
       } = req.body);
       const school = await School.findOne({ where: { id } });
       if (isEmpty(school)) {
         return notFound(res);
       }
-      const updateSchool = await school.update(attributes);
-      return res
-        .status(200)
-        .json({ message: 'School update successfully', data: updateSchool });
+      const data = await school.update(attributes);
+      const message = 'School update successfully';
+      return okResponse(res, data, 200, message);
     } catch (err) {
       return badRequest(res, err);
     }
@@ -113,22 +113,25 @@ export default class SchoolController {
   static async find(req, res) {
     try {
       const { id } = req.params;
-      const school = await School.findOne({
+      const data = await School.findOne({
         where: { id },
         include: [
           {
-            model: Company,
-            as: 'companies',
+            model: User,
+            as: 'users',
+            where: {
+              type: 'PRINCIPAL'
+            },
             attributes: {
-              exclude: ['password']
+              exclude: ['password', 'schoolId']
             }
           }
         ]
       });
-      if (isEmpty(school)) {
+      if (isEmpty(data)) {
         return notFound(res);
       }
-      return res.json({ message: 'Success', data: school });
+      return okResponse(res, data);
     } catch (err) {
       return badRequest(res, err);
     }
@@ -142,7 +145,12 @@ export default class SchoolController {
         return notFound(res);
       }
       await school.destroy();
-      return res.status(200).json({ message: 'School removed successfully' });
+      return okResponse(
+        res,
+        undefined,
+        undefined,
+        'School removed successfully'
+      );
     } catch (err) {
       return badRequest(res, err);
     }
@@ -162,10 +170,12 @@ export default class SchoolController {
         throw new Error(`${company.name} is already your partner`);
       }
       const response = await school.addCompany(company);
-      return res.status(201).json({
-        message: 'Partnership request sent successfully',
-        data: response
-      });
+      return okResponse(
+        res,
+        response,
+        201,
+        'Partnership request sent successfully'
+      );
     } catch (error) {
       return badRequest(res, error);
     }
