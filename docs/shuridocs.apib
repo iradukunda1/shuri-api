@@ -1,0 +1,58 @@
+FORMAT: 1A
+
+# Shuri API
+
+A collection of all complementary Shuri Apps. This API helps in creation and tracking/managing bus companies, schools and other various stakeholders like drivers, parents, students, etc.
+
+# Group Admins
+Resource ralated to Admins in the API.
+
+# Group Buses
+Resource ralated to Buses in the API.
+## Question Collection [/buses]
+
+# Group Bus Companies
+
+Resource ralated to Bus Companies in the API.
+
+## Get All Bus Companies [GET /buscompanies]
++ Response (application/json)
+    + attributes
+        - buscompanies (array[Buscompany1, Buscompany2])
+## Get One Bus Company [Get /buscompanies/:id]
++ attributes
+        - buscompanies (object{Buscompany1})
+
+# Group Drivers
+
+Resource ralated to Drivers in the API.
+
+## Get All Drivers [GET /drivers]
+
+# Group Schools
+
+Resource ralated to Schools in the API.
+
+## Get All Schools [GET /schools]
+
+# Group Users
+
+Resource ralated to Users in the API.
+
+## Get All Users [GET /users]
+
+# Data Structures
+
+## Buscompany1 (object)
+- id: 1 (number): The ID of the Bus BusCompany
+- name: tubatware (string): The name of the Bus Company
+- email: tubatware@shuri.com (string): The email of the Bus Company
+- password: ldkjflaksjdf#kjsldkfas (string): The hashed password of the Bus Company
+
+## Buscompany2 (object)
+- id: 2 (number): The ID of the Bus BusCompany
+- name: mwige (string): The name of the Bus Company
+- email: mwige@shuri.com (string): The email of the Bus Company
+- password: ldkjflaksjdf#kjsldkfas (string): The hashed password of the Bus Company
+
+
