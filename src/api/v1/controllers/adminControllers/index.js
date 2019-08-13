@@ -8,7 +8,7 @@ export default class AdminController {
   static async create(req, res) {
     try {
       const newUser = {};
-      ({ username: newUser.username, password: newUser.password } = req.body);
+      ({ email: newUser.email, password: newUser.password } = req.body);
       const user = await Admin.create(newUser);
       user.password = undefined;
       return res.json({ message: 'Success', data: user });

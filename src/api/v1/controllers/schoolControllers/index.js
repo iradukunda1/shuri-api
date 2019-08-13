@@ -1,6 +1,7 @@
 import { isEmpty } from 'lodash';
 import db from '../../../../models';
-import { notFound, badRequest } from '../../../../utils/response';
+import { notFound, badRequest, okResponse } from '../../../../utils/response';
+import generatePassword from '../../../../utils/genPwd';
 
 const { School, User, BusCompany: Company } = db;
 /* 
@@ -10,10 +11,11 @@ const { School, User, BusCompany: Company } = db;
 		"password":"password"
 	},
 	"name":"KEP DAMN",
-	"sector":"Kimironko",
+	"country":"Rwanda",
 	"district":"Gasabo",
-	"province":"Kigali",
-	"cell":"Kimironko"
+	"phoneNumber":"Kigali",
+  "longitude":"some"
+  "latitude":"some"
 } 
 */
 export default class SchoolController {
@@ -22,10 +24,11 @@ export default class SchoolController {
       const newSchool = {};
       ({
         name: newSchool.name,
-        province: newSchool.province,
+        country: newSchool.country,
         district: newSchool.district,
-        sector: newSchool.sector,
-        cell: newSchool.cell
+        phoneNumber: newSchool.phoneNumber,
+        longitude: newSchool.longitude,
+        latitude: newSchool.latitude
       } = req.body);
       const user = await User.findOne({
         where: {
@@ -35,12 +38,14 @@ export default class SchoolController {
       if (user) {
         throw new Error('Principal email already taken');
       }
-      const school = await School.create(
+      const data = await School.create(
         {
           ...newSchool,
           users: [
             {
               ...req.body.principal,
+              password: generatePassword(), // password to be send to the user and user change them.
+              phoneNumber: newSchool.phoneNumber,
               type: 'PRINCIPAL'
             }
           ]
@@ -55,9 +60,7 @@ export default class SchoolController {
         }
       );
 
-      return res
-        .status(201)
-        .json({ message: 'School registered successfully', data: school });
+      return okResponse(res, data, 201, 'School registered successfully');
     } catch (err) {
       return badRequest(res, err);
     }
@@ -65,18 +68,21 @@ export default class SchoolController {
 
   static async findAll(_req, res) {
     try {
-      const schools = await School.findAll({
+      const data = await School.findAll({
         include: [
           {
             model: User,
             as: 'users',
+            where: {
+              type: 'PRINCIPAL'
+            },
             attributes: {
-              exclude: ['password']
+              exclude: ['password', 'schoolId']
             }
           }
         ]
       });
-      return res.json({ message: 'Success', data: schools });
+      return okResponse(res, data, 200, 'Success');
     } catch (error) {
       return badRequest(res, error);
     }
@@ -88,19 +94,17 @@ export default class SchoolController {
       const attributes = {};
       ({
         name: attributes.name,
-        province: attributes.province,
+        country: attributes.province,
         district: attributes.district,
-        sector: attributes.sector,
-        cell: attributes.cell
+        phoneNumber: attributes.phoneNumber
       } = req.body);
       const school = await School.findOne({ where: { id } });
       if (isEmpty(school)) {
         return notFound(res);
       }
-      const updateSchool = await school.update(attributes);
-      return res
-        .status(200)
-        .json({ message: 'School update successfully', data: updateSchool });
+      const data = await school.update(attributes);
+      const message = 'School update successfully';
+      return okResponse(res, data, 200, message);
     } catch (err) {
       return badRequest(res, err);
     }
@@ -109,22 +113,25 @@ export default class SchoolController {
   static async find(req, res) {
     try {
       const { id } = req.params;
-      const school = await School.findOne({
+      const data = await School.findOne({
         where: { id },
         include: [
           {
-            model: Company,
-            as: 'companies',
+            model: User,
+            as: 'users',
+            where: {
+              type: 'PRINCIPAL'
+            },
             attributes: {
-              exclude: ['password']
+              exclude: ['password', 'schoolId']
             }
           }
         ]
       });
-      if (isEmpty(school)) {
+      if (isEmpty(data)) {
         return notFound(res);
       }
-      return res.json({ message: 'Success', data: school });
+      return okResponse(res, data);
     } catch (err) {
       return badRequest(res, err);
     }
@@ -138,7 +145,12 @@ export default class SchoolController {
         return notFound(res);
       }
       await school.destroy();
-      return res.status(200).json({ message: 'School removed successfully' });
+      return okResponse(
+        res,
+        undefined,
+        undefined,
+        'School removed successfully'
+      );
     } catch (err) {
       return badRequest(res, err);
     }
@@ -158,10 +170,12 @@ export default class SchoolController {
         throw new Error(`${company.name} is already your partner`);
       }
       const response = await school.addCompany(company);
-      return res.status(201).json({
-        message: 'Partnership request sent successfully',
-        data: response
-      });
+      return okResponse(
+        res,
+        response,
+        201,
+        'Partnership request sent successfully'
+      );
     } catch (error) {
       return badRequest(res, error);
     }

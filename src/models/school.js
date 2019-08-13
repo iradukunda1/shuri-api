@@ -12,10 +12,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         unique: true
       },
-      province: DataTypes.STRING,
       district: DataTypes.STRING,
-      sector: DataTypes.STRING,
-      cell: DataTypes.STRING
+      country: DataTypes.STRING,
+      phoneNumber: DataTypes.STRING
     },
     {
       tableName: 'Schools'
@@ -31,6 +30,11 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'schoolId',
       through: models.SchoolCompanyPartnership,
       as: 'companies'
+    });
+    School.hasMany(models.Classroom, {
+      onDelete: 'CASCADE',
+      foreignKey: 'schoolId',
+      as: 'classrooms'
     });
   };
   return School;

@@ -17,7 +17,7 @@ describe('Bus Controller', () => {
   describe('BusCompany should be able to add a new bus', () => {
     test('should add a new bus successfully', done => {
       return request
-        .post('/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/buses')
+        .post('/api/v1/buses')
         .send({
           plateNumber: 'H2O788'
         })
@@ -43,7 +43,7 @@ describe('Bus Controller', () => {
 
     test('should not add an already existing car', done => {
       return request
-        .post('/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/buses')
+        .post('/api/v1/buses')
         .send({
           plateNumber: 'H2O788'
         })
@@ -62,7 +62,7 @@ describe('Bus Controller', () => {
 
     test('should validate new bus', done => {
       return request
-        .post('/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/buses')
+        .post('/api/v1/buses')
         .send({})
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(400)
@@ -82,7 +82,7 @@ describe('Bus Controller', () => {
     test('Should return one bus', done => {
       return request
         .get(
-          `/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/buses/${busId}`
+          `/api/v1/buses/${busId}`
         )
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(200)
@@ -106,7 +106,7 @@ describe('Bus Controller', () => {
     test('should return error on invalid bus id', () => {
       return request
         .get(
-          `/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/buses/${busId}-jka`
+          `/api/v1/buses/${busId}-jka`
         )
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(400)
@@ -121,7 +121,7 @@ describe('Bus Controller', () => {
     test('should return not found error', () => {
       return request
         .get(
-          `/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/buses/36e46bea-3f99-44ee-a610-23e7a997a680`
+          `/api/v1/buses/36e46bea-3f99-44ee-a610-23e7a997a680`
         )
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(404)
@@ -153,7 +153,7 @@ describe('Bus Controller', () => {
     it('should update bus successfully', () => {
       return request
         .put(
-          `/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/buses/${busId}`
+          `/api/v1/buses/${busId}`
         )
         .send({
           model: 'Yutongo'
@@ -172,7 +172,7 @@ describe('Bus Controller', () => {
     it('should not update bus with an already existing platNumber', () => {
       return request
         .put(
-          `/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/buses/${busId}`
+          `/api/v1/buses/${busId}`
         )
         .send({
           plateNumber: '676BCD'
@@ -193,7 +193,7 @@ describe('Bus Controller', () => {
     it('should only delete company buses', () => {
       return request
         .delete(
-          `/api/v1/companies/f4d40af8-b73d-4715-bc7d-5513588a3560/buses/36e46bea-3f99-88bb-a610-23e7a107a678`
+          `/api/v1/buses/36e46bea-3f99-88bb-a610-23e7a107a678`
         )
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(404)
@@ -206,7 +206,7 @@ describe('Bus Controller', () => {
     it('should should delete company bus', () => {
       return request
         .delete(
-          `/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/buses/${busId}`
+          `/api/v1/buses/${busId}`
         )
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(200)
@@ -216,23 +216,11 @@ describe('Bus Controller', () => {
         });
     });
 
-    it('should should return not found error', () => {
-      return request
-        .delete(
-          `/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/buses/36e46bea-3f99-44ee-a610-23e7a997a641`
-        )
-        .set('Authorization', `Bearer ${companyToken}`)
-        .expect(404)
-        .then(res => {
-          const { error } = res.body;
-          expect(error).toMatch(/Record not found/);
-        });
-    });
 
     it('should not deleted with invalid bus id', () => {
       return request
         .delete(
-          `/api/v1/companies/36e46bea-3f99-44ee-a610-23e7a997a641/buses/${busId}-jka`
+          `/api/v1/buses/${busId}-jka`
         )
         .set('Authorization', `Bearer ${companyToken}`)
         .expect(400)

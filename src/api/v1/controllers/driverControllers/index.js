@@ -53,11 +53,10 @@ export default class DriverController {
 
   static async find(req, res) {
     try {
-      const { id, companyId: busCompanyId } = req.params;
+      const { id } = req.params;
       const driver = await Driver.findOne({
         where: {
-          id,
-          busCompanyId
+          id
         },
         attributes: {
           exclude: ['password']

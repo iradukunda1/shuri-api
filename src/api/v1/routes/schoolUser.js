@@ -10,20 +10,20 @@ const routers = Router();
 routers.all('*', authenticate);
 routers
   .post(
-    '/schools/:schoolId/users',
+    '/school-users',
     authorize(schoolPrincipal),
     validate,
     SchoolUserController.create
   )
-  .get('/schools/:schoolId/users', SchoolUserController.findAll)
-  .get('/schools/:schoolId/users/:id', SchoolUserController.find)
+  .get('/schools/:schoolId/school-users', SchoolUserController.findAll)
+  .get('/school-users/:id', SchoolUserController.find)
   .put(
-    '/schools/:schoolId/users/:id',
+    '/school-users/:id',
     authorize(schoolPrincipal),
     SchoolUserController.update
   )
   .delete(
-    '/schools/:schoolId/users/:id',
+    '/school-users/:id',
     authorize(schoolPrincipal),
     isPrincipal,
     SchoolUserController.delete

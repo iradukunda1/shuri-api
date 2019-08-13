@@ -1,20 +1,25 @@
 import { isEmpty } from 'lodash';
 import db from '../../../../models';
-import { badRequest, notFound } from '../../../../utils/response';
+import { badRequest, notFound, okResponse } from '../../../../utils/response';
+import generatePwd from '../../../../utils/genPwd';
 
 const { BusCompany, School, SchoolCompanyPartnership: Partners } = db;
 export default class CompanyController {
   static async create(req, res) {
     try {
-      const newUser = {};
+      const newCompany = {
+        password: generatePwd() // password to be sent to the user and changed
+      };
       ({
-        name: newUser.name,
-        email: newUser.email,
-        password: newUser.password
+        name: newCompany.name,
+        email: newCompany.email,
+        country: newCompany.country,
+        district: newCompany.district,
+        phoneNumber: newCompany.phoneNumber
       } = req.body);
-      const company = await BusCompany.create(newUser);
+      const company = await BusCompany.create(newCompany);
       company.password = undefined;
-      return res.status(201).json({ message: 'Success', data: company });
+      return okResponse(res, company, 201);
     } catch (err) {
       return badRequest(res, err, 'Company registration failed');
     }
@@ -30,10 +35,12 @@ export default class CompanyController {
       }
       const updatedCompany = await company.update({ name, email, password });
       updatedCompany.password = undefined;
-      return res.status(201).json({
-        message: 'Company update successfully',
-        data: updatedCompany
-      });
+      return okResponse(
+        res,
+        updatedCompany,
+        200,
+        'Company update successfully'
+      );
     } catch (err) {
       return badRequest(res, err, 'Company update failed');
     }
@@ -46,7 +53,7 @@ export default class CompanyController {
           exclude: ['password']
         }
       });
-      return res.json({ message: 'Success', data: { companies } });
+      return okResponse(res, { companies });
     } catch (error) {
       return badRequest(error);
     }
@@ -62,11 +69,11 @@ export default class CompanyController {
         }
       });
       if (isEmpty(company)) {
-        throw new Error('Record not found');
+        return notFound(res);
       }
-      return res.json({ message: 'Success', data: company });
+      return okResponse(res, company);
     } catch (error) {
-      return res.status(400).json({ error: error.message || 'Bad request' });
+      return badRequest(res, error);
     }
   }
 
@@ -78,7 +85,7 @@ export default class CompanyController {
         return notFound(res);
       }
       await company.destroy();
-      return res.status(200).json({ message: 'Record deleted' });
+      return okResponse(res, undefined, 200, 'Record deleted');
     } catch (err) {
       return badRequest(res, err);
     }
@@ -110,11 +117,12 @@ export default class CompanyController {
       const record = await Partners.findOne({ where: { schoolId, companyId } });
       if (!record) {
         return notFound(res);
-      } if (record.status === 'approved') {
+      }
+      if (record.status === 'approved') {
         throw new Error('Request already approved');
       }
       await record.update({ status: 'approved' });
-      return res.status(200).json({ message: 'Partnership request approved ' });
+      return okResponse(res, undefined, 200, 'Partnership request approved ');
     } catch (error) {
       return badRequest(res, error);
     }
@@ -132,7 +140,7 @@ export default class CompanyController {
         throw new Error('Request already rejected');
       }
       await record.update({ status: 'rejected' });
-      return res.status(200).json({ message: 'Partnership request rejected ' });
+      return okResponse(res, undefined, 200, 'Partnership request rejected');
     } catch (error) {
       return badRequest(res, error);
     }

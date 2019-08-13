@@ -1,20 +1,28 @@
 import model from '../../../../models';
 import { badRequest, notFound } from '../../../../utils/response';
+import generatePwd from '../../../../utils/genPwd';
 
 const { User, School } = model;
 export default class SchoolUserController {
   static async create(req, res) {
     try {
       const { schoolId } = req.user;
-      const newUser = { schoolId };
-      ({
-        firstName: newUser.firstName,
-        lastName: newUser.lastName,
-        email: newUser.email,
-        password: newUser.password,
-        phoneNumber: newUser.phoneNumber
-      } = req.body);
-      const response = await User.create({ ...newUser, schoolId });
+      const users = req.body.users.map(user => {
+        const newUser = { password: generatePwd(), schoolId };
+        ({
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          email: newUser.email,
+          phoneNumber: newUser.phoneNumber,
+          type: newUser.type
+        } = user);
+        return newUser;
+      });
+
+      const response = await User.bulkCreate(users, {
+        returning: true,
+        individualHooks: true
+      });
       response.password = undefined;
       return res
         .status(201)
@@ -49,11 +57,10 @@ export default class SchoolUserController {
 
   static async find(req, res) {
     try {
-      const { id, schoolId } = req.params;
+      const { id } = req.params;
       const user = await User.findOne({
         where: {
-          id,
-          schoolId
+          id
         },
         attributes: {
           exclude: ['password']
@@ -100,7 +107,13 @@ export default class SchoolUserController {
   static async delete(req, res) {
     try {
       const { id } = req.params;
-      const user = await User.findByPk(id);
+      const { schoolId } = req.user;
+      const user = await User.findOne({
+        where: {
+          id,
+          schoolId
+        }
+      });
       if (!user) {
         return notFound(res);
       }

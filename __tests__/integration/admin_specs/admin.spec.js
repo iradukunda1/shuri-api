@@ -1,9 +1,9 @@
 import '@babel/polyfill';
 import request from '../../helpers/request';
 
-const adminAttributes = ['id', 'username', 'updatedAt', 'createdAt', 'type'];
+const adminAttributes = ['id', 'email', 'updatedAt', 'createdAt', 'type'];
 const admin = {
-  username: 'shuri-app',
+  email: 'shuri-app@example.com',
   password: 'password'
 };
 let adminId;
@@ -19,7 +19,7 @@ describe('Admin Controller', () => {
   let superAdminToken;
   beforeAll(async () => {
     const response = await request.post('/api/v1/admins/auth').send({
-      username: 'admin-1',
+      email: 'admin1@example.com',
       password: 'password'
     });
     superAdminToken = response.body.token;
@@ -53,7 +53,7 @@ describe('Admin Controller', () => {
           const { message, error } = res.body;
           expect(message).toMatch(/Admin registration failed/);
           expect(error).toEqual(
-            expect.objectContaining({ username: 'username is already taken' })
+            expect.objectContaining({ email: 'email is already taken' })
           );
           done();
         });
@@ -67,7 +67,7 @@ describe('Admin Controller', () => {
           const { message, error } = res.body;
           expect(message).toMatch(/Validation error/);
           expect(Object.keys(error)).toEqual(
-            expect.arrayContaining(['username'])
+            expect.arrayContaining(['email'])
           );
           done();
         });
@@ -123,17 +123,17 @@ describe('Admin Controller', () => {
           done();
         });
     });
-    it('should should not authenticate admin on invalid username', done => {
+    it('should not authenticate admin on invalid username', done => {
       return request
         .post('/api/v1/admins/auth')
-        .send({ ...admin, username: 'hello' })
+        .send({ ...admin, email: 'hello@me.com' })
         .then(res => {
           const { error } = res.body;
           expect(Object.keys(res.body)).toEqual(
             expect.arrayContaining(['error'])
           );
           expect(res.status).toEqual(400);
-          expect(error).toEqual(`Invalid username/password`);
+          expect(error.message).toEqual(`Invalid email/password`);
           done();
         });
     });
@@ -148,7 +148,7 @@ describe('Admin Controller', () => {
             expect.arrayContaining(['error'])
           );
           expect(res.status).toEqual(400);
-          expect(error).toEqual(`Invalid username/password`);
+          expect(error.message).toEqual(`Invalid email/password`);
           done();
         });
     });
@@ -165,7 +165,7 @@ describe('Admin Controller', () => {
           );
           expect(message).toMatch(/Validation error/);
           expect(error).toEqual(
-            expect.objectContaining({ username: 'Username is required' })
+            expect.objectContaining({ email: 'Email is required' })
           );
           done();
         });

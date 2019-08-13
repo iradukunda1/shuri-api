@@ -7,6 +7,8 @@ module.exports = {
           id: '36e46bea-3f99-44ee-a610-23e7a997a641',
           name: 'Bus Company 1',
           email: 'company_1@example.com',
+          country:'Rwanda',
+          district:'Nyarugenge',
           password:
             '$2b$10$CzfqN8d7S0hhrsMceldTO.Cv9Zxey2Ibd3U6Nmh95NSPyva5z.jeW',
           createdAt: new Date(),
@@ -16,6 +18,8 @@ module.exports = {
           id: 'f4d40af8-b73d-4715-bc7d-5513588a3560',
           name: 'Bus Company 2',
           email: 'company_2@example.com',
+          country:'Rwanda',
+          district:'Nyarugenge',
           password:
             '$2b$10$CzfqN8d7S0hhrsMceldTO.Cv9Zxey2Ibd3U6Nmh95NSPyva5z.jeW',
           createdAt: new Date(),

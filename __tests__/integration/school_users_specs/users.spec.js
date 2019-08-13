@@ -5,7 +5,7 @@ let token;
 let userId;
 describe('School Users Controller', () => {
   beforeAll(async () => {
-    const response = await request.post('/api/v1/users/auth').send({
+    const response = await request.post('/api/v1/school-users/auth').send({
       email: 'principal@school.org',
       password: 'password'
     });
@@ -15,30 +15,41 @@ describe('School Users Controller', () => {
   describe('Create New User', () => {
     test('should new user be addded successfully', () => {
       return request
-        .post('/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/users')
+        .post('/api/v1/school-users')
         .send({
-          email: 'user@school.org',
-          password: 'password'
+          users: [
+            {
+              email: 'user@school.org',
+              firstName: 'user',
+              type: 'TEACHER'
+            }
+          ]
         })
         .set('Authorization', `Bearer ${token}`)
-        .expect(201)
+
         .then(res => {
           const { message, data } = res.body;
-          userId = data.id;
+          const user = data[0];
+          userId = user.id;
           expect(message).toMatch(/User registered successfully/);
-          expect(Object.keys(data)).toEqual(
+          expect(Object.keys(user)).toEqual(
             expect.arrayContaining(['id', 'email', 'schoolId']),
             expect.not.arrayContaining(['password'])
           );
+          expect(user.type).toEqual('TEACHER');
         });
     });
 
     test('should new user be addded successfully', () => {
       return request
-        .post('/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/users')
+        .post('/api/v1/school-users')
         .send({
-          email: 'user@school.org',
-          password: 'password'
+          users: [
+            {
+              email: 'user@school.org',
+              lastName: 'user'
+            }
+          ]
         })
         .set('Authorization', `Bearer ${token}`)
         .expect(400)
@@ -52,8 +63,8 @@ describe('School Users Controller', () => {
 
     test('should new user be addded successfully', () => {
       return request
-        .post('/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/users')
-        .send({ email: 'sup' })
+        .post('/api/v1/school-users')
+        .send({ users: [{ email: 'sup' }] })
         .set('Authorization', `Bearer ${token}`)
         .expect(400)
         .then(res => {
@@ -68,7 +79,9 @@ describe('School Users Controller', () => {
   describe('Find School Users', () => {
     test('should retrieve all users', () => {
       return request
-        .get('/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/users')
+        .get(
+          '/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/school-users'
+        )
         .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .then(res => {
@@ -84,7 +97,9 @@ describe('School Users Controller', () => {
 
     test('should return an error on invalid school id', () => {
       return request
-        .get('/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678adfa/users')
+        .get(
+          '/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a99ad7c678/school-users'
+        )
         .set('Authorization', `Bearer ${token}`)
         .expect(400)
         .then(res => {
@@ -97,9 +112,7 @@ describe('School Users Controller', () => {
 
     test('should find a school users', () => {
       return request
-        .get(
-          `/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/users/${userId}`
-        )
+        .get(`/api/v1/school-users/${userId}`)
         .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .then(res => {
@@ -114,9 +127,7 @@ describe('School Users Controller', () => {
 
     test('should return not found on non existing user id', () => {
       return request
-        .get(
-          `/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/users/36e46bea-3f99-44ee-a610-23e7a997c678`
-        )
+        .get(`/api/v1/school-users/36e46bea-3f99-44ee-a610-23e7a997c678`)
         .set('Authorization', `Bearer ${token}`)
         .expect(404)
         .then(res => {
@@ -128,9 +139,7 @@ describe('School Users Controller', () => {
 
     test('should return error on invalid user id', () => {
       return request
-        .get(
-          `/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/users/${userId}-kjaf`
-        )
+        .get(`/api/v1/school-users/${userId}-kjaf`)
         .set('Authorization', `Bearer ${token}`)
         .expect(400)
         .then(res => {
@@ -145,9 +154,7 @@ describe('School Users Controller', () => {
   describe('Update School User', () => {
     test('should update school user', () => {
       return request
-        .put(
-          `/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/users/${userId}`
-        )
+        .put(`/api/v1/school-users/${userId}`)
         .send({ firstName: 'Dodos', lastName: 'Mukunzi' })
         .set('Authorization', `Bearer ${token}`)
         .expect(200)
@@ -165,9 +172,7 @@ describe('School Users Controller', () => {
 
     test('should not update user with invalid id', () => {
       return request
-        .put(
-          `/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/users/${userId}-kjafl`
-        )
+        .put(`/api/v1/school-users/${userId}-kjafl`)
         .send({ firstName: 'Dodo' })
         .set('Authorization', `Bearer ${token}`)
         .expect(400)
@@ -181,9 +186,7 @@ describe('School Users Controller', () => {
 
     test('should respond with 404 error', () => {
       return request
-        .put(
-          `/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/users/36e46bea-3f99-44ee-a610-23e7a997c678`
-        )
+        .put(`/api/v1/school-users/36e46bea-3f99-44ee-a610-23e7a997c678`)
         .send({ firstName: 'Dodo' })
         .set('Authorization', `Bearer ${token}`)
         .expect(404)
@@ -198,9 +201,7 @@ describe('School Users Controller', () => {
   describe('Delete School User', () => {
     test('should not found user if provided wrong user id', () => {
       return request
-        .delete(
-          `/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/users/36e46bea-3f99-44ee-a610-23e7a997c678`
-        )
+        .delete(`/api/v1/school-users/36e46bea-3f99-44ee-a610-23e7a997c678`)
         .set('Authorization', `Bearer ${token}`)
         .expect(404)
         .then(res => {
@@ -211,9 +212,7 @@ describe('School Users Controller', () => {
     });
     test('should fail on invalid user id', () => {
       return request
-        .delete(
-          `/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/users/36e46bea-3f99-44ee-a610-23e7a997c678kajf`
-        )
+        .delete(`/api/v1/school-users/36e46bea-3f99-44ee-a610-23e7a997c678kajf`)
         .set('Authorization', `Bearer ${token}`)
         .expect(400)
         .then(res => {
@@ -226,9 +225,7 @@ describe('School Users Controller', () => {
 
     test('should school principal delete school user', () => {
       return request
-        .delete(
-          `/api/v1/schools/36e46bea-3f99-44ee-a610-23e7a997c678/users/${userId}`
-        )
+        .delete(`/api/v1/school-users/${userId}`)
         .set('Authorization', `Bearer ${token}`)
         .expect(200)
         .then(res => {

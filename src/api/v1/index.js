@@ -7,6 +7,7 @@ import school from './routes/school';
 import driver from './routes/driver';
 import bus from './routes/bus';
 import schoolUser from './routes/schoolUser';
+import classroomRouters from './routes/classroom';
 
 const router = Router();
 
@@ -19,7 +20,8 @@ router.use(
   school,
   driver,
   bus,
-  schoolUser
+  schoolUser,
+  classroomRouters
 );
 
 export default router;

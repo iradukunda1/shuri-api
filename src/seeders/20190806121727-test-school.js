@@ -6,10 +6,9 @@ module.exports = {
         {
           id: '36e46bea-3f99-44ee-a610-23e7a997c678',
           name: 'School',
-          province: 'Kigali',
+          country: 'Rwanda',
           district: 'Gasabo',
-          sector: 'Kimironko',
-          cell: 'Bumbogo',
+          phoneNumber: '07800000',
           createdAt: new Date(),
           updatedAt: new Date()
         }
