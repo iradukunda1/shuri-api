@@ -1,5 +1,5 @@
 import db from '../../../../models';
-import { notFound, badRequest } from '../../../../utils/response';
+import { notFound, badRequest, okResponse } from '../../../../utils/response';
 
 const { Bus, BusCompany } = db;
 
@@ -7,15 +7,13 @@ export default class BusController {
   static async create(req, res) {
     try {
       const { model, plateNumber } = req.body;
-      const { companyId } = req.params;
+      const { id } = req.user;
       const bus = await Bus.create({
         model,
         plateNumber,
-        busCompanyId: companyId
+        busCompanyId: id
       });
-      return res
-        .status(201)
-        .json({ message: 'Bus registered successfully', data: bus });
+      return okResponse(res, bus, 201, 'Bus registered successfully');
     } catch (err) {
       return badRequest(res, err);
     }
@@ -38,7 +36,7 @@ export default class BusController {
           }
         ]
       });
-      return res.status(200).json({ message: 'Success', data });
+      return okResponse(res, data);
     } catch (err) {
       return badRequest(res, err);
     }
@@ -46,17 +44,16 @@ export default class BusController {
 
   static async find(req, res) {
     try {
-      const { id, companyId } = req.params;
+      const { id } = req.params;
       const bus = await Bus.findOne({
         where: {
-          id,
-          busCompanyId: companyId
+          id
         }
       });
       if (!bus) {
         return notFound(res);
       }
-      return res.status(200).json({ message: 'Success', data: bus });
+      return okResponse(res, bus);
     } catch (err) {
       return badRequest(res, err);
     }
@@ -74,9 +71,7 @@ export default class BusController {
         }
       });
       const data = await bus.update({ plateNumber, model });
-      return res
-        .status(201)
-        .json({ message: 'Bus updated successfully', data });
+      return okResponse(res, data, 200, 'Bus updated successfully');
     } catch (err) {
       return badRequest(res, err, 'Bus update failed');
     }
@@ -96,7 +91,7 @@ export default class BusController {
         return notFound(res);
       }
       await bus.destroy();
-      return res.status(200).json({ message: 'Bus deleted successfully' });
+      return okResponse(res, undefined, 200, 'Bus deleted successfully');
     } catch (err) {
       return badRequest(res, err);
     }

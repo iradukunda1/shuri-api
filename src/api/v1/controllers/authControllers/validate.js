@@ -2,17 +2,17 @@ import Joi from '@hapi/joi';
 import joiError from '../../../../utils/joiError';
 
 export default (req, res, next) => {
-  const { username, password } = req.body;
-  const schema = Joi.object().keys({
-    username: Joi.string()
+  const { email, password } = req.body;
+  const schema =  Joi.object().keys( {
+    email: Joi.string()
       .required()
-      .label('Username is required'),
+      .label('Email is required'),
     password: Joi.string()
       .required()
       .label('Password is required')
   });
 
-  return Joi.validate({ username, password }, schema, (err, _value) => {
+  return Joi.validate({ email, password }, schema, (err, _value) => {
     if (err) {
       const error = joiError(err);
       return res.status(400).json({ message: 'Validation error', error });
@@ -23,7 +23,7 @@ export default (req, res, next) => {
 
 export const validateCompanyLogin = (req, res, next) => {
   const { email, password } = req.body;
-  const schema = Joi.object().keys({
+  const schema =  Joi.object().keys( {
     email: Joi.string()
       .required()
       .label('Email is required'),

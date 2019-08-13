@@ -1,23 +1,24 @@
 import { isEmpty } from 'lodash';
 import db from '../../../../models';
 import getToken from './getToken';
+import { badRequest } from '../../../../utils/response';
 
 const { Admin, BusCompany, User } = db;
+const okRes = (res, token) => res.status(200).json({ message: 'Success', token });
 export default class AuthController {
   static async admin(req, res) {
     try {
-      const { username, password } = req.body;
-      const errMsg = 'Invalid username/password';
-      const admin = await Admin.findOne({ where: { username } });
+      const { email, password } = req.body;
+      const errMsg = 'Invalid email/password';
+      const admin = await Admin.findOne({ where: { email } });
       if (!admin) {
-        return res.status(400).json({ error: errMsg });
+        throw new Error(errMsg)
       }
       const payload = { id: admin.id, resource: 'Admin' };
       const token = await getToken(password, admin.password, payload);
-      return res.status(200).json({ message: 'Success', token });
+      return okRes(res, token)
     } catch (error) {
-      const message = error.message || 'Bad request';
-      return res.status(400).json({ error: message });
+      return badRequest(res, error)
     }
   }
 
@@ -27,14 +28,13 @@ export default class AuthController {
       const message = 'Invalid email/password';
       const company = await BusCompany.findOne({ where: { email } });
       if (isEmpty(company)) {
-        return res.status(400).json({ error: message });
+        throw new Error(message)
       }
       const payload = { id: company.id, resource: 'BusCompany' };
-      const token = await getToken(password, company.password, payload, true);
-      return res.status(200).json({ message: 'Success', token });
+      const token = await getToken(password, company.password, payload);
+      return okRes(res, token)
     } catch (error) {
-      const message = error.message || 'Bad request';
-      return res.status(400).json({ error: message });
+      return badRequest(res, error);
     }
   }
 
@@ -44,14 +44,13 @@ export default class AuthController {
       const message = 'Invalid email/password';
       const user = await User.findOne({ where: { email } });
       if (isEmpty(user)) {
-        return res.status(400).json({ error: message });
+       throw new Error(message)
       }
       const payload = { id: user.id, resource: 'User' };
-      const token = await getToken(password, user.password, payload, true);
-      return res.status(200).json({ message: 'Success', token });
+      const token = await getToken(password, user.password, payload);
+      return okRes(res, token)
     } catch (error) {
-      const message = error.message || 'Bad request';
-      return res.status(400).json({ error: message });
+      return badRequest(res, error)
     }
   }
 
@@ -62,8 +61,7 @@ export default class AuthController {
       user.password = undefined;
       return res.status(200).json({ message: 'Success', data: user });
     } catch (error) {
-      const message = error.message || 'Bad request';
-      return res.status(400).json({ error: message });
+      return badRequest(res, error)
     }
   }
 }

@@ -1,6 +1,6 @@
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    return queryInterface.createTable('BusCompanies', {
+    return queryInterface.createTable('Classrooms', {
       id: {
         allowNull: false,
         primaryKey: true,
@@ -9,30 +9,23 @@ module.exports = {
       },
       name: {
         type: Sequelize.STRING,
+        allowNull: false,
         unique: true
       },
-      email: {
+      code: {
         type: Sequelize.STRING,
+        allowNull: false,
         unique: true
       },
-       password: {
+      avatar: {
         type: Sequelize.STRING
       },
-      phoneNumber:{
-        type: Sequelize.STRING,
-        unique: true
+      schoolId: {
+        type: Sequelize.UUID,
+        allowNull: false,
+        onDelete: 'CASCADE',
+        references: { model: 'Schools', key: 'id' }
       },
-      district: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-      country: {
-        type: Sequelize.STRING,
-        allowNull: false
-      },
-     description:{
-       type: Sequelize.STRING(250),
-     },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -44,6 +37,6 @@ module.exports = {
     });
   },
   down: (queryInterface, _Sequelize) => {
-    return queryInterface.dropTable('BusCompanies');
+    return queryInterface.dropTable('Classrooms');
   }
 };

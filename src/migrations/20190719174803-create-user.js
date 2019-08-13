@@ -32,7 +32,7 @@ module.exports = {
          * DOD: director of discipline
          * PRINCIPAL: school admin or general manager
          */
-        type: Sequelize.ENUM('TM', 'DOD', 'PRINCIPAL'),
+        type: Sequelize.ENUM('TM', 'DOD', 'PRINCIPAL', 'TEACHER'),
         defaultValue: 'TM'
       },
       createdAt: {
@@ -48,6 +48,11 @@ module.exports = {
         type: Sequelize.UUID,
         onDelete: 'CASCADE',
         references: { model: 'Schools', key: 'id' }
+      },
+      classroomId: {
+        allowNull: true,
+        type: Sequelize.UUID,
+        references: { model: 'Classrooms', key: 'id' }
       }
     });
   },

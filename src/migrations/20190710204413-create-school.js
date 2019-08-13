@@ -12,7 +12,7 @@ module.exports = {
         unique: true,
         allowNull: false
       },
-      province: {
+      phoneNumber:{
         type: Sequelize.STRING,
         allowNull: false
       },
@@ -20,13 +20,20 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
-      sector: {
+      country: {
         type: Sequelize.STRING,
         allowNull: false
       },
-      cell: {
+      latitude:{
         type: Sequelize.STRING,
-        allowNull: false
+        defaultValue: ''
+      },
+      longitude:{
+        type: Sequelize.STRING,
+        defaultValue: ''
+      },
+      description:{
+       type: Sequelize.STRING(250),
       },
       createdAt: {
         allowNull: false,

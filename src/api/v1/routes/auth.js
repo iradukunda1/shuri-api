@@ -10,7 +10,7 @@ const authRouters = Router();
 authRouters
   .post('/admins/auth', validate, AuthController.admin)
   .post('/companies/auth', validateCompanyLogin, AuthController.company)
-  .post('/users/auth', validateCompanyLogin, AuthController.user)
+  .post('/school-users/auth', validateCompanyLogin, AuthController.user)
   .get('/current', authenticate, AuthController.currentUser);
 
 export default authRouters;

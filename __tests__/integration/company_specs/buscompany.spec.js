@@ -3,8 +3,10 @@ import request from '../../helpers/request';
 
 const company = {
   name: 'Company 3',
-  password: 'password',
-  email: 'company_3@example.com'
+  email: 'company_3@example.com',
+  phoneNumber: '0789277275',
+  country: 'Rwanda',
+  district: 'Gasabo'
 };
 let adminToken;
 let companyToken;
@@ -12,13 +14,13 @@ let companyId;
 describe('Bus Company Controller', () => {
   beforeAll(async () => {
     const response = await request.post('/api/v1/admins/auth').send({
-      username: 'admin-1',
+      email: 'admin1@example.com',
       password: 'password'
     });
     adminToken = response.body.token;
   });
   describe('Create Company', () => {
-    test('should create a new bus company successfully', done => {
+    test('should create a new bus company successfully', () => {
       return request
         .post('/api/v1/companies')
         .send(company)
@@ -31,7 +33,6 @@ describe('Bus Company Controller', () => {
             expect.arrayContaining(['id', 'name', 'email'])
           );
           companyId = data.id;
-          done();
         });
     });
 
@@ -85,8 +86,8 @@ describe('Bus Company Controller', () => {
       return request
         .post('/api/v1/companies/auth')
         .send({
-          email: company.email,
-          password: company.password
+          email: 'company_1@example.com',
+          password: 'password'
         })
         .expect(200)
         .then(res => {
@@ -108,7 +109,7 @@ describe('Bus Company Controller', () => {
         .expect(400)
         .then(res => {
           const { error } = res.body;
-          expect(error).toEqual('Invalid email/password');
+          expect(error.message).toEqual('Invalid email/password');
           done();
         });
     });
@@ -160,14 +161,14 @@ describe('Bus Company Controller', () => {
         });
     });
 
-    test('should return 404', done => {
+    test('should return 404', () => {
       return request
         .get('/api/v1/companies/36e46bea-3f99-99ee-a610-23e7a997a641')
         .set('Authorization', `Bearer ${companyToken}`)
+        .expect(404)
         .then(res => {
           const { error } = res.body;
           expect(error).toMatch(/Record not found/);
-          done();
         });
     });
 
@@ -280,12 +281,11 @@ describe('Bus Company Controller', () => {
         });
     });
 
-  test('should allow admin to delete bus company', done => {
+    test('should allow admin to delete bus company', done => {
       return request
         .delete(`/api/v1/companies/kajhdkfhakjhfjk`)
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(400, done);
     });
   });
-
 });

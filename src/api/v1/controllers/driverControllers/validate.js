@@ -2,7 +2,7 @@ import Joi from '@hapi/joi';
 import joiError from '../../../../utils/joiError';
 
 export default (req, res, next) => {
-  const schema = Joi.object().keys({
+  const schema =  Joi.object().keys( {
     username: Joi.string()
       .min(4)
       .max(12)

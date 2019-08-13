@@ -27,8 +27,12 @@ module.exports = (sequelize, DataTypes) => {
          * DOD: director of discipline
          * PRINCIPAL: school admin or general manager
          */
-        type: DataTypes.ENUM('TM', 'DOD', 'PRINCIPAL'),
+        type: DataTypes.ENUM('TM', 'DOD', 'PRINCIPAL', 'TEACHER'),
         defaultValue: 'TM'
+      },
+      classroomId: {
+        type: DataTypes.UUID,
+        allowNull: true
       }
     },
     {
@@ -36,10 +40,14 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   User.beforeCreate((user, _options) => bcrypt(user));
+  User.beforeBulkCreate((user, _options) => bcrypt(user));
   User.associate = models => {
     User.belongsTo(models.School, {
       foreignKey: 'schoolId',
       hooks: true
+    });
+    User.belongsTo(models.Classroom, {
+      foreignKey: 'classroomId'
     });
   };
   return User;

@@ -4,7 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "NODE_ENV=test npm run db:reset && jest  --collect-coverage",
+    "test": "NODE_ENV=test npm run db:reset && jest  --collect-coverage --detectOpenHandles",
     "dev": "NODE_ENV=development nodemon --exec babel-node src/app.js",
     "clean": "rm -rf dist && mkdir dist",
     "build-server": "babel -d ./dist ./src",
