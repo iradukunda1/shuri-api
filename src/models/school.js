@@ -14,7 +14,9 @@ module.exports = (sequelize, DataTypes) => {
       },
       district: DataTypes.STRING,
       country: DataTypes.STRING,
-      phoneNumber: DataTypes.STRING
+      phoneNumber: DataTypes.STRING,
+      latitude: DataTypes.STRING,
+      longitude: DataTypes.STRING
     },
     {
       tableName: 'Schools'

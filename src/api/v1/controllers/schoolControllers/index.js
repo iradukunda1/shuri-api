@@ -32,7 +32,7 @@ export default class SchoolController {
       } = req.body);
       const user = await User.findOne({
         where: {
-          email: req.body.principal.email
+          email: req.body.email
         }
       });
       if (user) {
@@ -43,7 +43,7 @@ export default class SchoolController {
           ...newSchool,
           users: [
             {
-              ...req.body.principal,
+              email: req.body.email,
               password: generatePassword(), // password to be send to the user and user change them.
               phoneNumber: newSchool.phoneNumber,
               type: 'PRINCIPAL'

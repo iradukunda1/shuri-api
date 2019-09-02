@@ -4,13 +4,17 @@ import request from '../../helpers/request';
 let adminToken;
 let schoolId;
 const newSchool = {
-  name: 'Kepler',
-  country: 'Rwanda',
-  district: 'Gasabo',
+  name: 'School 1',
+  email: 'principal@kepler.org',
   phoneNumber: '0789277275',
-  principal: {
-    email: 'principal@kepler.org'
-  }
+  password: 'password',
+  longitude: '-56788765',
+  province: 'Kigali',
+  sector: 'Kimironko',
+  cell: 'Bibare',
+  latitude: '+678987',
+  district: 'Gasabo',
+  country: 'Rwanda'
 };
 describe('School Controller', () => {
   beforeAll(async () => {
@@ -74,10 +78,8 @@ describe('School Controller', () => {
         .post('/api/v1/schools')
         .send({
           ...newSchool,
-          principal: {
-            email: 'principal_he@gmail.com',
-            password: 'password'
-          }
+          email: 'principal_he@gmail.com',
+          password: 'password'
         })
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(400)
@@ -94,7 +96,7 @@ describe('School Controller', () => {
         .post('/api/v1/schools')
         .send({
           ...newSchool,
-          principal: {}
+          email: 'ooo'
         })
         .set('Authorization', `Bearer ${adminToken}`)
         .expect(400)

@@ -31,7 +31,7 @@ export default class AdminController {
           ...filters
         },
         attributes: {
-          // exclude: ['password']
+          exclude: ['password']
         }
       });
       return res.json({ message: 'Success', data: allAdmins });

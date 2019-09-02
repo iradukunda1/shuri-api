@@ -2,32 +2,46 @@ import Joi from '@hapi/joi';
 import joiError from '../../../../utils/joiError';
 
 const Schemas = {
-  POST:  Joi.object().keys( {
+  POST: Joi.object().keys({
     name: Joi.string()
       .required()
       .label('Name is required'),
     country: Joi.string()
       .required()
       .label('Country is required'),
+    province: Joi.string()
+      .required()
+      .label('Province is required'),
     district: Joi.string()
       .required()
       .label('District is required'),
-    phoneNumber: Joi.string()
+    sector: Joi.string()
       .required()
+      .label('Sector is required'),
+    cell: Joi.string()
+      .required()
+      .label('Cell is required'),
+
+    email: Joi.string()
+      .email()
+      .required()
+      .label('Invalid principal email'),
+    password: Joi.string()
+      .min(6)
+      .required()
+      .label('Password should have minimum of 6 characters'),
+    phoneNumber: Joi.string()
       .min(10)
-      .max(12)
-      .label('Invalid phone number'),
-    longitude: Joi.string(),
-    latitude: Joi.string(),
-    principal:  Joi.object().keys( {
-      firstName: Joi.string(),
-      lastName: Joi.string(),
-      email: Joi.string()
-        .email()
-        .required()
-        .label('Invalid principal email'),
-      password: Joi.string().min(4).label('Password too short')
-    })
+      .max(13)
+      .label('Invalid principal phone number'),
+    longitude: Joi.number()
+      .precision(8)
+      .required()
+      .label('Invalid longitude value'),
+    latitude: Joi.number()
+      .precision(8)
+      .required()
+      .label('Invalid latitude value')
   })
 };
 export default (req, res, next) => {
