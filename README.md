@@ -228,8 +228,8 @@ Add a new school school `POST /schools`
 
 ```source-json
 {
-	"name":"School 1",
-	"email":"school@example.com",
+    "name":"School 1",
+    "email":"school@example.com",
     "phoneNumber":"0789277275",
     "password":"password",
     "longitude":"-56788765",
